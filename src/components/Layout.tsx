@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
@@ -16,6 +16,7 @@ import {
   Plus, 
   Heartbeat,
   MapPin,
+  Hospital,
   Warning,
   ChartBar,
   Pill,
@@ -28,7 +29,7 @@ import {
   CaretRight
 } from '@phosphor-icons/react';
 import { Badge } from './ui/Badge';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 import LanguageSwitcher from './common/LanguageSwitcher';
 
 export default function Layout({ children, title }: { 
@@ -44,7 +45,13 @@ export default function Layout({ children, title }: {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('sidebarCollapsed') === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
 
   const handleLogout = async () => {
     await logout();
@@ -60,7 +67,7 @@ export default function Layout({ children, title }: {
     case 'cmo':
       return [
         { label: t('commandCentre'), path: '/command', icon: <Heartbeat size={20} /> },
-        { label: t('healthCentres'), path: '/centres', icon: <MapPin size={20} /> },
+        { label: t('healthCentres'), path: '/centres', icon: <Hospital size={20} /> },
         { label: t('registerPatients'), path: '/registration', icon: <UserPlus size={20} /> },
         { label: t('mapView'), path: '/map', icon: <MapPin size={20} /> },
         { label: t('requests'), path: '/requests', icon: <FileText size={20} /> },

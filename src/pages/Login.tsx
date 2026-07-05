@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-toastify';
 import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/Card';
 import { Heartbeat, Lock, Envelope } from '@phosphor-icons/react';
 
@@ -77,7 +77,7 @@ export default function Login() {
               />
             </div>
 
-            <div className="relative">
+<div className="relative">
               <Input
                 label="Password"
                 type="password"
@@ -85,6 +85,14 @@ export default function Login() {
                 error={errors.password?.message}
                 {...register('password')}
               />
+              <div className="text-right mt-2">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             {authError && (
