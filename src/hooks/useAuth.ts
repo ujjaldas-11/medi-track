@@ -60,6 +60,10 @@ export function useAuth() {
     loading, 
     register, 
     login, 
-    logout 
+    logout,
+    canEditStock: ['cmo', 'mo', 'pharmacist'].includes(role || ''),
+    canManageBeds: ['cmo', 'mo', 'frontdesk'].includes(role || ''),
+    canManageDoctors: ['cmo', 'mo', 'staff'].includes(role || ''),
+    isAdmin: role === 'cmo'
   };
 }
