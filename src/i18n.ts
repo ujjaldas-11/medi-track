@@ -1,27 +1,71 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+// const resources = {
+//   en: {
+//     translation: {
+//       dashboard: "Dashboard",
+//       stock: "Stock Management",
+//       beds: "Bed Availability",
+//       doctors: "Doctor Attendance",
+//       tests: "Tests",
+//       registration: "Patient Registration",
+//       command: "Command Centre",
+//       logout: "Logout",
+//       lowStock: "Low Stock",
+//       add: "Add",
+//       save: "Save",
+//       refresh: "Refresh",
+//       welcome: "Welcome",
+//     }
+//   },
+//   hi: {
+//     translation: {
+//       dashboard: "डैशबोर्ड",
+//       stock: "स्टॉक प्रबंधन",
+//       beds: "बेड उपलब्धता",
+//       doctors: "डॉक्टर उपस्थिति",
+//       tests: "टेस्ट",
+//       registration: "मरीज पंजीकरण",
+//       command: "कमांड सेंटर",
+//       logout: "लॉगआउट",
+//       lowStock: "कम स्टॉक",
+//       add: "जोड़ें",
+//       save: "सेव करें",
+//       refresh: "रिफ्रेश",
+//       welcome: "स्वागत है",
+//     }
+//   }
+// };
+
 const resources = {
   en: {
     translation: {
       // Sidebar Menu
-      title: "MEdiTrack",
       commandCentre: "Command Centre",
-      allCentres: "All Centres",
-      aiRecommendations: "AI Recommendations",
-      facilityDashboard: "Facility Dashboard",
-      stockManagement: "Stock Management",
+      healthCentres: "Health Centres",
+      mapView: "Map View",
+      requests: "Requests",
+      alertsFeed: "Alerts Feed",
+      analytics: "Analytics",
+
+      facilityDetail: "Facility Detail",
+      stock: "Stock",
       beds: "Beds",
       doctors: "Doctors",
-      alerts: "Alerts",
-      patientRegistration: "Patient Registration",
-      footfall: "Footfall",
-      bedStatus: "Bed Status",
-      myDashboard: "My Dashboard",
-      attendance: "Attendance",
-      tests: "Tests",
+      diagnosticUnits: "Diagnostic Units",
 
-      // Common
+      medicinesStock: "Medicines Stock",
+      stockAlerts: "Stock Alerts",
+
+      registerPatients: "Register Patients",
+      dailyFootfall: "Daily Footfall",
+      bedsStatus: "Beds Status",
+
+      doctorsDirectory: "Doctors Directory",
+      diagnosticEquipment: "Diagnostic Equipment",
+
+      // Common Buttons
       logout: "Logout",
       refresh: "Refresh",
       add: "Add",
@@ -32,21 +76,28 @@ const resources = {
   },
   hi: {
     translation: {
-      title: "मेडीट्रैक",
       commandCentre: "कमांड सेंटर",
-      allCentres: "सभी केंद्र",
-      aiRecommendations: "AI सिफारिशें",
-      facilityDashboard: "सुविधा डैशबोर्ड",
-      stockManagement: "स्टॉक प्रबंधन",
+      healthCentres: "स्वास्थ्य केंद्र",
+      mapView: "मानचित्र दृश्य",
+      requests: "अनुरोध",
+      alertsFeed: "अलर्ट फीड",
+      analytics: "एनालिटिक्स",
+
+      facilityDetail: "सुविधा विवरण",
+      stock: "स्टॉक",
       beds: "बेड",
       doctors: "डॉक्टर",
-      alerts: "अलर्ट",
-      patientRegistration: "मरीज पंजीकरण",
-      footfall: "मरीज आवागमन",
-      bedStatus: "बेड स्थिति",
-      myDashboard: "मेरा डैशबोर्ड",
-      attendance: "उपस्थिति",
-      tests: "टेस्ट",
+      diagnosticUnits: "डायग्नोस्टिक यूनिट",
+
+      medicinesStock: "दवाओं का स्टॉक",
+      stockAlerts: "स्टॉक अलर्ट",
+
+      registerPatients: "मरीज पंजीकरण",
+      dailyFootfall: "दैनिक मरीज आवागमन",
+      bedsStatus: "बेड स्थिति",
+
+      doctorsDirectory: "डॉक्टर निर्देशिका",
+      diagnosticEquipment: "डायग्नोस्टिक उपकरण",
 
       logout: "लॉगआउट",
       refresh: "रिफ्रेश",
@@ -57,6 +108,7 @@ const resources = {
     }
   }
 };
+
 
 i18n
   .use(initReactI18next)
