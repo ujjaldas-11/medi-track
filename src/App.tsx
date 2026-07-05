@@ -3,6 +3,7 @@ import { useAuth } from './hooks/useAuth';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import CommandCenter from './pages/CommandCenter';
 // import CentresDirectory from './pages/CentresDirectory';
@@ -27,6 +28,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route element={<ProtectedLayout />}>
           <Route path="/" element={<Dashboard />} />

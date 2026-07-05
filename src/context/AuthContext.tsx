@@ -3,7 +3,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged
+  onAuthStateChanged,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -18,6 +19,7 @@ interface AuthContextType {
   register: (email: string, password: string, role: UserRole) => Promise<User>;
   login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
   canEditStock: boolean;
   canManageBeds: boolean;
   canManageDoctors: boolean;
@@ -82,24 +84,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // const login = async (email: string, password: string) => {
+  //   setLoading(true);
+  //   try {
+  //     const cred = await signInWithEmailAndPassword(auth, email, password);
+  //     setLoading(false);
+  //     return cred.user;
+  //   } catch (error) {
+  //     setLoading(false);
+  //     throw error;
+  //   }
+  // };
+
   const login = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      setLoading(false);
-      return cred.user;
-    } catch (error) {
-      setLoading(false);
-      throw error;
-    }
+    // Don't manage `loading` here. onAuthStateChanged is the single source
+    // of truth for auth loading — it also fetches the user's role from
+    // Firestore before flipping loading to false. If we also flip loading
+    // here, it can go false before the role fetch finishes, so the
+    // protected route briefly sees "loading: false, user: null" and
+    // bounces back to /login, even though sign-in actually succeeded.
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return cred.user;
   };
 
-  const logout = async () => {
+const logout = async () => {
     setLoading(true);
     await signOut(auth);
     setUser(null);
     setRole(null);
     setLoading(false);
+  };
+
+  const resetPassword = async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
   };
 
   // Permissions mapping:
@@ -117,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       register,
       login,
       logout,
+      resetPassword,
       canEditStock,
       canManageBeds,
       canManageDoctors,
