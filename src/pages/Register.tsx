@@ -5,42 +5,50 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-toastify';
-import { Input } from '../components/ui/Input';
+import { Input, Select } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Heartbeat, Lock, Envelope } from '@phosphor-icons/react';
+import { Heartbeat } from '@phosphor-icons/react';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  role: z.enum(['cmo', 'mo', 'pharmacist', 'frontdesk', 'staff'], {
+    error: () => 'Please select a valid role'
+  }),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function Login() {
-  const { login } = useAuth();
+export default function Register() {
+  const { register: registerAuth } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState('');
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      role: 'staff'
+    }
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     setLoading(true);
     setAuthError('');
     try {
-      await login(data.email, data.password);
-      toast.success('Successfully logged in!', { position: 'bottom-right' });
-      navigate('/');
+      await registerAuth(data.email, data.password, data.role);
+      toast.success('Account registered successfully! Please Login to continue.', { position: 'bottom-right' });
+      navigate('/login');
     } catch (err: any) {
       console.error(err);
-      let errMsg = 'Failed to sign in. Please check your credentials.';
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        errMsg = 'Invalid email or password.';
-      } else if (err.code === 'auth/invalid-credential') {
-        errMsg = 'Invalid login credentials.';
+      let errMsg = 'Failed to register account.';
+      if (err.code === 'auth/email-already-in-use') {
+        errMsg = 'This email is already registered.';
+      } else if (err.code === 'auth/invalid-email') {
+        errMsg = 'Invalid email address format.';
+      } else if (err.code === 'auth/weak-password') {
+        errMsg = 'Password is too weak.';
       }
       setAuthError(errMsg);
       toast.error(errMsg, { position: 'bottom-right' });
@@ -59,7 +67,7 @@ export default function Login() {
           MediTrack
         </h2>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          District Health Centre Management System
+          Create a New Healthcare Account
         </p>
       </div>
 
@@ -67,25 +75,33 @@ export default function Login() {
         <Card className="px-10 py-8 shadow-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             
-            <div className="relative">
-              <Input
-                label="Email Address"
-                type="email"
-                placeholder="doctor@meditrack.com"
-                error={errors.email?.message}
-                {...register('email')}
-              />
-            </div>
+            <Input
+              label="Email Address"
+              type="email"
+              placeholder="user@meditrack.com"
+              error={errors.email?.message}
+              {...register('email')}
+            />
 
-            <div className="relative">
-              <Input
-                label="Password"
-                type="password"
-                placeholder="••••••••"
-                error={errors.password?.message}
-                {...register('password')}
-              />
-            </div>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              {...register('password')}
+            />
+
+            <Select
+              label="Account Role / Designation"
+              error={errors.role?.message}
+              {...register('role')}
+            >
+              <option value="cmo">Chief Medical Officer (CMO)</option>
+              <option value="mo">Medical Officer (MO)</option>
+              <option value="pharmacist">Pharmacist</option>
+              <option value="frontdesk">Front Desk Staff</option>
+              <option value="staff">Clinical Support Staff</option>
+            </Select>
 
             {authError && (
               <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold text-center">
@@ -98,17 +114,17 @@ export default function Login() {
               loading={loading}
               className="w-full text-center"
             >
-              Sign In
+              Create Account
             </Button>
           </form>
 
           <div className="mt-6 text-center text-xs">
-            <span className="text-slate-400">Don't have an account? </span>
+            <span className="text-slate-400">Already have an account? </span>
             <Link 
-              to="/register" 
+              to="/login" 
               className="font-bold text-teal-600 dark:text-teal-400 hover:underline"
             >
-              Register here
+              Sign in here
             </Link>
           </div>
         </Card>
