@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { addStock, getStockByCenter, updateStock } from '../lib/firestore';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export default function Stock() {
+  const { t } = useTranslation();
   const { canEditStock } = useAuth();
   const [stockList, setStockList] = useState<any[]>([]);
   const [newMedicine, setNewMedicine] = useState('');
@@ -72,7 +74,7 @@ export default function Stock() {
               className="w-32 p-3 border rounded"
             />
             <button onClick={handleAdd} className="bg-green-600 text-white px-8 rounded">
-              Add
+              {t('Add')}
             </button>
           </div>
         </div>

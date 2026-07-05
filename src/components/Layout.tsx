@@ -1,5 +1,7 @@
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import LanguageSwitcher from './common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export default function Layout({ children, title }: { 
   children: React.ReactNode, 
@@ -12,51 +14,52 @@ export default function Layout({ children, title }: {
     await logout();
     navigate('/login');
   };
+const { t } = useTranslation();
 
-  const getMenuItems = () => {
-    switch (role) {
-      case 'cmo':
-        return [
-          { label: 'Command Centre', path: '/command' },
-          { label: 'All Centres', path: '/all-centres' },
-          { label: 'AI Recommendations', path: '/recommendations' },
-        ];
-      case 'mo':
-        return [
-          { label: 'Facility Dashboard', path: '/' },
-          { label: 'Stock', path: '/stock' },
-          { label: 'Beds', path: '/beds' },
-          { label: 'Doctors', path: '/doctors' },
-        ];
-      case 'pharmacist':
-        return [
-          { label: 'Stock Management', path: '/stock' },
-          { label: 'Alerts', path: '/alerts' },
-        ];
-      case 'frontdesk':
-        return [
-          { label: 'Patient Registration', path: '/registration' },
-          { label: 'Footfall', path: '/footfall' },
-          { label: 'Bed Status', path: '/beds' },
-        ];
-      case 'staff':
-      default:
-        return [
-          { label: 'My Dashboard', path: '/' },
-          { label: 'Attendance', path: '/doctors' },
-          { label: 'Tests', path: '/tests' },
-        ];
-    }
-  };
-
+const getMenuItems = () => {
+  switch (role) {
+    case 'cmo':
+      return [
+        { label: t('commandCentre'), path: '/command' },
+        { label: t('allCentres'), path: '/all-centres' },
+        { label: t('aiRecommendations'), path: '/recommendations' },
+      ];
+    case 'mo':
+      return [
+        { label: t('facilityDashboard'), path: '/' },
+        { label: t('stockManagement'), path: '/stock' },
+        { label: t('beds'), path: '/beds' },
+        { label: t('doctors'), path: '/doctors' },
+      ];
+    case 'pharmacist':
+      return [
+        { label: t('stockManagement'), path: '/stock' },
+        { label: t('alerts'), path: '/alerts' },
+      ];
+    case 'frontdesk':
+      return [
+        { label: t('patientRegistration'), path: '/registration' },
+        { label: t('footfall'), path: '/footfall' },
+        { label: t('bedStatus'), path: '/beds' },
+      ];
+    case 'staff':
+    default:
+      return [
+        { label: t('myDashboard'), path: '/' },
+        { label: t('attendance'), path: '/doctors' },
+        { label: t('tests'), path: '/tests' },
+      ];
+  }
+};
   const menuItems = getMenuItems();
 
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
       <div className="bg-white shadow p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-600">MediTrack</h1>
+        <h1 className="text-2xl font-bold text-blue-600">{t('title')}</h1>
         <div className="flex items-center gap-4">
+            <LanguageSwitcher/>
           <span className="text-sm capitalize">{role}</span>
           <button 
             onClick={handleLogout}
@@ -91,4 +94,4 @@ export default function Layout({ children, title }: {
       </div>
     </div>
   );
-}
+}   
