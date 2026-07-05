@@ -7,7 +7,8 @@ import {
   doc, 
   deleteDoc,
   query,
-  where 
+  where ,
+  onSnapshot
 } from 'firebase/firestore';
 
 // ==================== CENTERS ====================
@@ -101,5 +102,16 @@ export const addPatientFootfall = async (centerId: string, count: number) => {
     date: new Date().toISOString().split('T')[0],
     count,
     createdAt: new Date()
+  });
+};
+
+
+
+export const listenToStock = (centerId: string, callback: (data: any[]) => void) => {
+  const q = query(collection(db, "stock"), where("centerId", "==", centerId));
+  
+  return onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    callback(data);
   });
 };

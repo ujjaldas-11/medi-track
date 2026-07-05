@@ -4,48 +4,57 @@ import { updateBeds } from '../lib/firestore';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Beds() {
-  const { user } = useAuth();
-  const [beds, setBeds] = useState({ totalBeds: 50, occupiedBeds: 0 });
+  const { canManageBeds } = useAuth();
+  const [totalBeds, setTotalBeds] = useState(50);
+  const [occupiedBeds, setOccupiedBeds] = useState(28);
   const centerId = "center1";
 
-  const loadBeds = async () => {
-    // For simplicity, we'll simulate fetch (you can expand later)
-    setBeds({ totalBeds: 50, occupiedBeds: 32 });
+  const saveBedData = async () => {
+    if (!canManageBeds) {
+      alert("You don't have permission to manage beds.");
+      return;
+    }
+    await updateBeds(centerId, totalBeds, occupiedBeds);
+    alert("Bed data saved successfully!");
   };
-
-  const updateBedStatus = async (occupied: number) => {
-    await updateBeds(centerId, beds.totalBeds, occupied);
-    setBeds({ ...beds, occupiedBeds: occupied });
-  };
-
-  useEffect(() => {
-    loadBeds();
-  }, []);
-
-  const freeBeds = beds.totalBeds - beds.occupiedBeds;
 
   return (
-    <Layout title="Bed Availability">
-      <div className="bg-white p-8 rounded shadow max-w-md">
-        <div className="text-center mb-6">
-          <p className="text-6xl font-bold text-green-600">{freeBeds}</p>
-          <p className="text-gray-500">Beds Available</p>
+    <Layout title="Bed Management">
+      <div className="bg-white p-8 rounded shadow max-w-lg">
+        <div className="mb-6">
+          <label className="block text-sm mb-2">Total Beds</label>
+          <input 
+            type="number" 
+            value={totalBeds}
+            onChange={(e) => setTotalBeds(Number(e.target.value))}
+            className="w-full p-4 border rounded text-3xl"
+            disabled={!canManageBeds}
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <button 
-            onClick={() => updateBedStatus(beds.occupiedBeds + 1)}
-            className="bg-red-500 text-white py-4 rounded font-medium"
-          >
-            +1 Occupied
-          </button>
-          <button 
-            onClick={() => updateBedStatus(Math.max(0, beds.occupiedBeds - 1))}
-            className="bg-green-500 text-white py-4 rounded font-medium"
-          >
-            +1 Free
-          </button>
+        <div className="mb-8">
+          <label className="block text-sm mb-2">Occupied Beds</label>
+          <input 
+            type="number" 
+            value={occupiedBeds}
+            onChange={(e) => setOccupiedBeds(Number(e.target.value))}
+            className="w-full p-4 border rounded text-3xl"
+            disabled={!canManageBeds}
+          />
         </div>
+
+        <div className="text-6xl font-bold text-center text-green-600 mb-8">
+          {totalBeds - occupiedBeds} Free
+        </div>
+
+        {canManageBeds && (
+          <button 
+            onClick={saveBedData}
+            className="w-full bg-blue-600 text-white py-4 rounded text-lg font-medium"
+          >
+            Save Bed Status
+          </button>
+        )}
       </div>
     </Layout>
   );

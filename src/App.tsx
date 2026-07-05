@@ -8,6 +8,8 @@ import Beds from './pages/Beds';
 import Doctors from './pages/Doctors';
 import Tests from './pages/Tests';
 import Admin from './pages/Admin';
+import CommandCentre from './pages/CommandCenter';
+import Registration from './pages/Registration';
 
 function App() {
   return (
@@ -17,11 +19,13 @@ function App() {
 
         <Route element={<ProtectedLayout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/command" element={<CommandCentre />} />
           <Route path="/stock" element={<Stock />} />
           <Route path="/beds" element={<Beds />} />
           <Route path="/doctors" element={<Doctors />} />
           <Route path="/tests" element={<Tests />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/registration" element={<Registration />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" />} />
