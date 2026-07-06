@@ -29,7 +29,8 @@ import {
   CaretRight
 } from '@phosphor-icons/react';
 import { Badge } from './ui/Badge';
-import { Button } from './ui/button';
+// import { Button } from './ui/Button';
+// import { Button } from './ui/Button';
 import LanguageSwitcher from './common/LanguageSwitcher';
 
 export default function Layout({ children, title }: { 

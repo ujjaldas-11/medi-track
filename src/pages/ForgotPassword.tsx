@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-toastify';
 import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/button';
+import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Heartbeat } from '@phosphor-icons/react';
 
