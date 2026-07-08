@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Input, Select } from '../components/ui/Input';
@@ -27,6 +28,7 @@ export default function Footfall() {
   const { canRegisterPatients } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [selectedCenterFilter, setSelectedCenterFilter] = useState('ALL');
+  const { t } = useTranslation();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FootfallFormData>({
     resolver: zodResolver(footfallSchema),
@@ -96,66 +98,66 @@ export default function Footfall() {
         {/* Left Side: Logger Form */}
         <div className="lg:col-span-1 space-y-6">
           <Card>
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <div className="p-2.5 bg-teal-500/10 text-teal-500 rounded-xl">
-                <Plus size={24} weight="bold" />
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+              <div className="p-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-150 rounded-xl">
+                <Plus size={22} weight="bold" />
               </div>
               <div>
-                <h4 className="font-bold text-[#0B2A4A] dark:text-slate-100 uppercase tracking-wide">Log Daily Counts</h4>
-                <p className="text-xs text-slate-400">Record daily visitor footfalls per facility</p>
+                <h4 className="font-bold text-zinc-900 dark:text-zinc-105 uppercase tracking-wide">{t('logDailyCounts', 'Log Daily Counts')}</h4>
+                <p className="text-xs text-zinc-400">{t('recordDailyVisitorSub', 'Record daily visitor footfalls per facility')}</p>
               </div>
             </div>
-
+ 
             {canRegisterPatients ? (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Select
-                  label="Health Centre"
+                  label={t('assignedCenter')}
                   error={errors.centerId?.message}
                   {...register('centerId')}
                 >
-                  <option value="">-- Select Center --</option>
+                  <option value="">{t('selectCenter')}</option>
                   {centers.map(center => (
                     <option key={center.id} value={center.id}>
                       {center.name}
                     </option>
                   ))}
                 </Select>
-
+ 
                 <Input
-                  label="Log Date"
+                  label={t('logDate', 'Log Date')}
                   type="date"
                   error={errors.date?.message}
                   {...register('date')}
                 />
-
+ 
                 <div className="grid grid-cols-2 gap-4">
                   <Input
-                    label="OPD Counts"
+                    label={t('opdCounts', 'OPD Counts')}
                     type="number"
                     error={errors.opdCount?.message}
                     {...register('opdCount', { valueAsNumber: true })}
                   />
                   <Input
-                    label="Emergency Counts"
+                    label={t('emergencyCounts', 'Emergency Counts')}
                     type="number"
                     error={errors.emergencyCount?.message}
                     {...register('emergencyCount', { valueAsNumber: true })}
                   />
                 </div>
-
+ 
                 <Button
                   type="submit"
                   loading={submitting}
                   className="w-full mt-4"
                 >
-                  Save Daily Log
+                  {t('saveDailyLog', 'Save Daily Log')}
                 </Button>
               </form>
             ) : (
               <div className="p-4 rounded-2xl bg-rose-500/5 text-rose-500 text-xs border border-rose-500/10 flex flex-col items-center text-center">
                 <Warning size={20} className="mb-2" />
-                <span className="font-bold uppercase tracking-wider">Access Restricted</span>
-                <p className="mt-1 text-slate-500">Only Front Desk staff and CMOs are permitted to log daily patient counts.</p>
+                <span className="font-bold uppercase tracking-wider">{t('accessRestricted')}</span>
+                <p className="mt-1 text-zinc-500">{t('onlyFrontDeskPermittedCount', 'Only Front Desk staff and CMOs are permitted to log daily patient counts.')}</p>
               </div>
             )}
           </Card>
@@ -168,74 +170,69 @@ export default function Footfall() {
           <Card>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Patient Volume Trend</h4>
-                <p className="text-xs text-slate-400">Visitor counts grouped by date</p>
+                <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">{t('patientVolumeTrend', 'Patient Volume Trend')}</h4>
+                <p className="text-xs text-zinc-400">{t('visitorCountsGrouped', 'Visitor counts grouped by date')}</p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">Center:</span>
+                <span className="text-zinc-400 text-xs font-bold uppercase tracking-wider">{t('centreFacility')}:</span>
                 <select
                   value={selectedCenterFilter}
                   onChange={(e) => setSelectedCenterFilter(e.target.value)}
-                  className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-xs border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200"
+                  className="px-3 py-1.5 bg-zinc-50 dark:bg-zinc-900 text-xs border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-700 dark:text-zinc-200 outline-none"
                 >
-                  <option value="ALL">All Centres</option>
+                  <option value="ALL">{t('allCentres')}</option>
                   {centers.map(center => (
                     <option key={center.id} value={center.id}>{center.name}</option>
                   ))}
                 </select>
               </div>
             </div>
-
+ 
             <div className="h-72">
               {chartData.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-slate-400 text-sm font-semibold">
-                  No visitor stats available for selected filters.
+                <div className="h-full flex items-center justify-center text-zinc-400 text-sm font-semibold">
+                  {t('noVisitorStats', 'No visitor stats available for selected filters.')}
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="opdColor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="emgColor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:stroke-slate-800" />
-                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.92 0 0)" className="dark:stroke-zinc-800" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                        border: '1px solid oklch(0.92 0 0)', 
+                        borderRadius: '0.75rem' 
+                      }} 
+                    />
                     <Legend wrapperStyle={{ fontSize: 11 }} />
-                    <Area type="monotone" dataKey="OPD" stroke="#14b8a6" strokeWidth={2} fillOpacity={1} fill="url(#opdColor)" name="OPD Visits" />
-                    <Area type="monotone" dataKey="Emergency" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#emgColor)" name="Emergency Units" />
+                    <Area type="monotone" dataKey="OPD" stroke="#18181b" strokeWidth={2} fillOpacity={0.04} fill="#18181b" name={t('opdVisits', 'OPD Visits')} />
+                    <Area type="monotone" dataKey="Emergency" stroke="#71717a" strokeWidth={2} fillOpacity={0.02} fill="#71717a" name={t('emergencyUnits', 'Emergency Units')} />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
             </div>
           </Card>
 
-          {/* Historical Logs List */}
           <div>
-            <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200 mb-4">Historical Visitor Log</h4>
+            <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200 mb-4">{t('historicalVisitorLog', 'Historical Visitor Log')}</h4>
             <Card className="p-0 overflow-hidden shadow-sm">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Log Date</TableHead>
-                    <TableHead>Centre Name</TableHead>
-                    <TableHead>OPD Count</TableHead>
-                    <TableHead>Emergency Count</TableHead>
-                    <TableHead>Total Visitations</TableHead>
+                    <TableHead>{t('logDate')}</TableHead>
+                    <TableHead>{t('centreName')}</TableHead>
+                    <TableHead>{t('opdCountCol', 'OPD Count')}</TableHead>
+                    <TableHead>{t('emergencyCountCol', 'Emergency Count')}</TableHead>
+                    <TableHead>{t('totalVisitations', 'Total Visitations')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredFootfallLogs.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-6 text-slate-400">
-                        No footfall history recorded.
+                      <TableCell colSpan={5} className="text-center py-6 text-zinc-400">
+                        {t('noFootfallHistory', 'No footfall history recorded.')}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -243,14 +240,14 @@ export default function Footfall() {
                       const centerName = centers.find(c => c.id === log.centerId)?.name || 'Unknown Centre';
                       return (
                         <TableRow key={log.id}>
-                          <TableCell className="font-semibold text-slate-800 dark:text-slate-200">
+                          <TableCell className="font-semibold text-zinc-800 dark:text-zinc-200">
                             {new Date(log.date).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                           </TableCell>
                           <TableCell>{centerName}</TableCell>
                           <TableCell>{log.opdCount}</TableCell>
                           <TableCell>{log.emergencyCount}</TableCell>
-                          <TableCell className="font-bold text-slate-800 dark:text-slate-200">
-                            {(log.opdCount || 0) + (log.emergencyCount || 0)} visits
+                          <TableCell className="font-bold text-zinc-800 dark:text-zinc-200">
+                            {t('visitsCount', { count: (log.opdCount || 0) + (log.emergencyCount || 0), defaultValue: `${(log.opdCount || 0) + (log.emergencyCount || 0)} visits` })}
                           </TableCell>
                         </TableRow>
                       );

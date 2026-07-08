@@ -19,16 +19,16 @@ export function Button({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none';
   
   const variantStyles = {
-    // Primary: teal-500 bg, navy text (#0B2A4A), hover to teal-600
-    primary: 'bg-teal-500 text-[#0B2A4A] hover:bg-teal-600 hover:shadow-lg hover:shadow-teal-500/20 focus:ring-teal-500',
-    // Secondary: soft teal/slate
-    secondary: 'bg-[#0B2A4A] text-white hover:bg-[#133c66] focus:ring-[#0B2A4A]',
+    // Primary: modern charcoal/black in light, white in dark
+    primary: 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-150 focus:ring-zinc-950 dark:focus:ring-zinc-300 shadow-sm',
+    // Secondary: soft zinc/slate gray
+    secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-700 focus:ring-zinc-500',
     // Outline: border
-    outline: 'border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 focus:ring-slate-400',
+    outline: 'border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 focus:ring-zinc-400',
     // Danger: critical red
-    danger: 'bg-rose-600 text-white hover:bg-rose-700 hover:shadow-lg hover:shadow-rose-600/20 focus:ring-rose-500',
+    danger: 'bg-rose-600 text-white hover:bg-rose-700 focus:ring-rose-500',
     // Ghost: transparent
-    ghost: 'text-slate-600 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-800 focus:ring-slate-400'
+    ghost: 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 focus:ring-zinc-400'
   };
 
   const sizeStyles = {

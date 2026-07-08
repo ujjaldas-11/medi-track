@@ -10,10 +10,8 @@ import {
   query, 
   where,
   getDocs,
-  setDoc,
   Timestamp
 } from 'firebase/firestore';
-import { toast } from 'react-toastify';
 
 export interface HealthCenter {
   id: string;

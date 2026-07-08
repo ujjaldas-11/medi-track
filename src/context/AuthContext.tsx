@@ -97,19 +97,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // };
 
   const login = async (email: string, password: string) => {
-    // Don't manage `loading` here. onAuthStateChanged is the single source
-    // of truth for auth loading — it also fetches the user's role from
-    // Firestore before flipping loading to false. If we also flip loading
-    // here, it can go false before the role fetch finishes, so the
-    // protected route briefly sees "loading: false, user: null" and
-    // bounces back to /login, even though sign-in actually succeeded.
     const cred = await signInWithEmailAndPassword(auth, email, password);
     return cred.user;
   };
 
-const logout = async () => {
+  const logout = async () => {
     setLoading(true);
-    await signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.warn("Firebase signOut skipped or failed: ", e);
+    }
     setUser(null);
     setRole(null);
     setLoading(false);

@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useAlerts } from '../context/AlertsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell, 
-  Sun, 
-  Moon, 
   List, 
   X, 
   User, 
   SignOut, 
-  Plus, 
   Heartbeat,
   MapPin,
   Hospital,
@@ -32,16 +28,34 @@ import { Badge } from './ui/Badge';
 // import { Button } from './ui/Button';
 // import { Button } from './ui/Button';
 import LanguageSwitcher from './common/LanguageSwitcher';
+import Chatbot from './common/Chatbot';
 
 export default function Layout({ children, title }: { 
   children: React.ReactNode; 
   title: string; 
 }) {
-  const { role, logout, user, canRegisterPatients, canEditStock, canManageBeds } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { role, logout, user } = useAuth();
   const { alerts, unreadCount, markAsRead, markAllAsRead } = useAlerts();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+
+  const titleKeys: Record<string, string> = {
+    "District Command Centre": "commandCentre",
+    "Medicines Stock Management": "medicinesStock",
+    "Bed Availability Telemetry": "bedsStatus",
+    "Doctors Attendance Directory": "doctorsDirectory",
+    "Diagnostic & Equipment Units": "diagnosticEquipment",
+    "Patient Registration Console": "registerPatients",
+    "Daily Footfall Telemetry": "dailyFootfall",
+    "Redistribution Requests": "requests",
+    "Stock Alerts Feed": "alertsFeed",
+    "District Analytics": "analytics",
+    "Centres Telemetry Map": "mapView",
+    "District Settings": "settings"
+  };
+
+  const displayTitle = titleKeys[title] ? t(titleKeys[title]) : title;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
@@ -112,9 +126,9 @@ export default function Layout({ children, title }: {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-zinc-50/70 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-[#0B2A4A] text-white shadow-md">
+      <header className="sticky top-0 z-40 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 border-b border-zinc-200 dark:border-zinc-800 shadow-sm">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Logo + Mobile Hamburger */}
@@ -122,31 +136,22 @@ export default function Layout({ children, title }: {
             {/* Hamburger Button for Mobile (opens sidebar drawer) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200"
+              className="lg:hidden p-2 rounded-xl bg-zinc-105 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
             >
               {mobileMenuOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
             </button>
 
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
-              <div className="w-9 h-9 rounded-xl bg-teal-500 flex items-center justify-center text-[#0B2A4A] font-bold text-xl shadow-inner">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00e1b2] to-[#0c5989] flex items-center justify-center text-white font-bold text-xl shadow-sm">
                 M
               </div>
-              <span className="font-extrabold text-lg tracking-wider uppercase">MediTrack</span>
+              <span className="font-extrabold text-lg tracking-tight uppercase">MediTrack</span>
             </div>
           </div>
 
           {/* Action Bar */}
           <div className="flex items-center gap-2 sm:gap-4">
             
-            {/* Theme Toggle */}
-            <button 
-              onClick={toggleTheme}
-              className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-teal-400 hover:text-teal-300 transition"
-              title="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun size={20} weight="bold" /> : <Moon size={20} weight="bold" />}
-            </button>
-
             {/* Notification Bell */}
             <div className="relative">
               <button 
@@ -154,12 +159,12 @@ export default function Layout({ children, title }: {
                   setAlertsOpen(!alertsOpen);
                   setProfileOpen(false);
                 }}
-                className={`p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white transition relative ${alertsOpen ? 'bg-slate-700' : ''}`}
+                className={`p-2 rounded-xl bg-zinc-55 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 transition relative ${alertsOpen ? 'bg-zinc-100 dark:bg-zinc-700' : ''}`}
                 title="Notifications"
               >
                 <Bell size={20} weight="bold" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-600 rounded-full text-[10px] font-black flex items-center justify-center animate-pulse">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-950 rounded-full text-[10px] font-black flex items-center justify-center animate-pulse shadow-sm">
                     {unreadCount}
                   </span>
                 )}
@@ -174,24 +179,24 @@ export default function Layout({ children, title }: {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 overflow-hidden text-slate-800 dark:text-slate-100"
+                      className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-50 overflow-hidden text-zinc-800 dark:text-zinc-100"
                     >
-                      <div className="p-4 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
-                        <span className="font-bold text-xs uppercase tracking-wider text-[#0B2A4A] dark:text-slate-350">Alert Feed ({unreadCount} new)</span>
+                      <div className="p-4 border-b border-zinc-100 dark:border-zinc-850 flex justify-between items-center bg-zinc-55 dark:bg-zinc-950">
+                        <span className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-300">Alert Feed ({unreadCount} new)</span>
                         {unreadCount > 0 && (
                           <button 
                             onClick={async () => {
                               await markAllAsRead();
                             }}
-                            className="text-[10px] font-bold uppercase text-teal-600 dark:text-teal-400 hover:underline"
+                            className="text-[10px] font-bold uppercase text-zinc-900 dark:text-zinc-250 hover:underline"
                           >
                             Mark all read
                           </button>
                         )}
                       </div>
-                      <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-700/50">
+                      <div className="max-h-72 overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800">
                         {alerts.length === 0 ? (
-                          <div className="p-6 text-center text-sm text-slate-400">No active alerts.</div>
+                          <div className="p-6 text-center text-sm text-zinc-400">No active alerts.</div>
                         ) : (
                           alerts.map((alert) => (
                             <div 
@@ -199,18 +204,18 @@ export default function Layout({ children, title }: {
                               onClick={async () => {
                                 if (!alert.isRead) await markAsRead(alert.id);
                               }}
-                              className={`p-4 text-xs transition cursor-pointer flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/40 ${!alert.isRead ? 'bg-teal-500/5 font-semibold' : ''}`}
+                              className={`p-4 text-xs transition cursor-pointer flex items-start gap-3 hover:bg-zinc-55 dark:hover:bg-zinc-800/40 ${!alert.isRead ? 'bg-zinc-900/5 dark:bg-zinc-50/5 font-semibold' : ''}`}
                             >
                               <div className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
                                 alert.severity === 'critical' 
                                   ? 'bg-rose-500' 
                                   : alert.severity === 'warning' 
                                     ? 'bg-amber-500' 
-                                    : 'bg-sky-500'
+                                    : 'bg-zinc-500'
                               }`} />
                               <div className="flex-1">
-                                <p className="text-slate-700 dark:text-slate-200">{alert.message}</p>
-                                <span className="text-[10px] text-slate-400 mt-1 block">
+                                <p className="text-zinc-700 dark:text-zinc-200">{alert.message}</p>
+                                <span className="text-[10px] text-zinc-400 mt-1 block">
                                   {alert.createdAt ? new Date(alert.createdAt.seconds * 1000).toLocaleTimeString() : ''}
                                 </span>
                               </div>
@@ -233,7 +238,7 @@ export default function Layout({ children, title }: {
                   setProfileOpen(!profileOpen);
                   setAlertsOpen(false);
                 }}
-                className={`p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white transition flex items-center gap-1.5 ${profileOpen ? 'bg-slate-700' : ''}`}
+                className={`p-2 rounded-xl bg-zinc-55 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-250 transition flex items-center gap-1.5 ${profileOpen ? 'bg-zinc-100 dark:bg-zinc-700' : ''}`}
                 title="Profile"
               >
                 <User size={20} weight="bold" />
@@ -249,11 +254,11 @@ export default function Layout({ children, title }: {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl z-50 overflow-hidden text-slate-800 dark:text-slate-100"
+                      className="absolute right-0 mt-2 w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-50 overflow-hidden text-zinc-800 dark:text-zinc-100"
                     >
-                      <div className="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-900/50">
-                        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Signed In As</p>
-                        <p className="text-sm font-semibold truncate text-[#0B2A4A] dark:text-slate-200">{user?.email}</p>
+                      <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-55/50 dark:bg-zinc-950/50">
+                        <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Signed In As</p>
+                        <p className="text-sm font-semibold truncate text-zinc-900 dark:text-zinc-200">{user?.email}</p>
                         <Badge variant="info" className="mt-1.5">{role}</Badge>
                       </div>
                       <div className="p-2">
@@ -262,7 +267,7 @@ export default function Layout({ children, title }: {
                             setProfileOpen(false);
                             navigate('/settings');
                           }}
-                          className="w-full text-left px-3 py-2 text-xs font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+                          className="w-full text-left px-3 py-2 text-xs font-semibold rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
                         >
                           Account Settings
                         </button>
@@ -302,7 +307,7 @@ export default function Layout({ children, title }: {
 
         {/* Desktop Sidebar */}
         <aside 
-          className={`hidden lg:flex flex-col shrink-0 sticky top-16 h-[calc(100vh-4rem)] bg-[#0B2A4A] text-white shadow-md transition-all duration-300 ${
+          className={`hidden lg:flex flex-col shrink-0 sticky top-16 h-[calc(100vh-4rem)] bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 ${
             sidebarCollapsed ? 'w-20' : 'w-64'
           }`}
         >
@@ -318,8 +323,8 @@ export default function Layout({ children, title }: {
                     sidebarCollapsed ? 'justify-center' : ''
                   } ${
                     isActive 
-                      ? 'bg-teal-500 text-[#0B2A4A]' 
-                      : 'hover:bg-slate-800 text-slate-200 hover:text-white'
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-650 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
                   }`}
                 >
                   {link.icon}
@@ -330,10 +335,10 @@ export default function Layout({ children, title }: {
           </nav>
 
           {/* Collapse Toggle */}
-          <div className="p-3 border-t border-white/10">
+          <div className="p-3 border-t border-zinc-200 dark:border-zinc-800">
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className={`w-full flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-300 hover:bg-slate-800 hover:text-white transition ${
+              className={`w-full flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-zinc-100 transition ${
                 sidebarCollapsed ? 'justify-center' : ''
               }`}
               title={sidebarCollapsed ? 'Expand' : 'Collapse'}
@@ -351,7 +356,7 @@ export default function Layout({ children, title }: {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+                className="fixed inset-0 z-40 bg-black/40 lg:hidden"
                 onClick={() => setMobileMenuOpen(false)}
               />
               <motion.aside
@@ -359,18 +364,18 @@ export default function Layout({ children, title }: {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                className="fixed top-0 left-0 z-50 h-full w-72 bg-[#0B2A4A] text-white shadow-2xl lg:hidden flex flex-col"
+                className="fixed top-0 left-0 z-50 h-full w-72 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 shadow-2xl lg:hidden flex flex-col border-r border-zinc-200 dark:border-zinc-800"
               >
-                <div className="h-16 flex items-center justify-between px-4 border-b border-white/10">
+                <div className="h-16 flex items-center justify-between px-4 border-b border-zinc-200 dark:border-zinc-800">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-teal-500 flex items-center justify-center text-[#0B2A4A] font-bold text-xl shadow-inner">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00e1b2] to-[#0c5989] flex items-center justify-center text-white font-bold text-xl shadow-sm">
                       M
                     </div>
-                    <span className="font-extrabold text-lg tracking-wider uppercase">MediTrack</span>
+                    <span className="font-extrabold text-lg tracking-tight uppercase">MediTrack</span>
                   </div>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200"
+                    className="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
                   >
                     <X size={20} weight="bold" />
                   </button>
@@ -384,8 +389,8 @@ export default function Layout({ children, title }: {
                         onClick={() => handleLinkClick(link.path)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition ${
                           isActive 
-                            ? 'bg-teal-500 text-[#0B2A4A]' 
-                            : 'hover:bg-slate-800 text-slate-200 hover:text-white'
+                            ? 'bg-primary text-primary-foreground shadow-sm' 
+                            : 'hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-650 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
                         }`}
                       >
                         {link.icon}
@@ -410,8 +415,8 @@ export default function Layout({ children, title }: {
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B2A4A] dark:text-slate-100 tracking-tight uppercase">
-                {title}
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight uppercase">
+                {displayTitle}
               </h2>
             </div>
             {children}
@@ -423,6 +428,9 @@ export default function Layout({ children, title }: {
       <footer className="py-6 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center text-xs text-slate-400">
         &copy; {new Date().getFullYear()} MediTrack District Health Management System. All rights reserved.
       </footer>
+      
+      {/* Context-aware Chatbot Assistant */}
+      <Chatbot />
     </div>
   );
 }

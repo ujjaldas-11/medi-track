@@ -13,7 +13,7 @@ export const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTML
         {label && (
           <label 
             htmlFor={inputId} 
-            className="block text-sm font-bold text-slate-700 dark:text-slate-350 mb-1.5 uppercase tracking-wider"
+            className="block text-sm font-bold text-zinc-700 dark:text-zinc-400 mb-1.5 uppercase tracking-wider"
           >
             {label}
           </label>
@@ -21,10 +21,10 @@ export const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTML
         <input
           ref={ref}
           id={inputId}
-          className={`w-full px-4 py-3 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border ${
+          className={`w-full px-4 py-3 text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-900 border ${
             error 
               ? 'border-rose-500 focus:ring-rose-500' 
-              : 'border-slate-200 dark:border-slate-700 focus:ring-teal-500'
+              : 'border-zinc-200 dark:border-zinc-800 focus:ring-zinc-900 dark:focus:ring-zinc-300'
           } rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:opacity-50 ${className}`}
           {...props}
         />
@@ -45,7 +45,7 @@ export const Select = forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<H
         {label && (
           <label 
             htmlFor={inputId} 
-            className="block text-sm font-bold text-slate-700 dark:text-slate-350 mb-1.5 uppercase tracking-wider"
+            className="block text-sm font-bold text-zinc-700 dark:text-zinc-400 mb-1.5 uppercase tracking-wider"
           >
             {label}
           </label>
@@ -53,10 +53,10 @@ export const Select = forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<H
         <select
           ref={ref}
           id={inputId}
-          className={`w-full px-4 py-3 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border ${
+          className={`w-full px-4 py-3 text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-900 border ${
             error 
               ? 'border-rose-500 focus:ring-rose-500' 
-              : 'border-slate-200 dark:border-slate-700 focus:ring-teal-500'
+              : 'border-zinc-200 dark:border-zinc-800 focus:ring-zinc-900 dark:focus:ring-zinc-300'
           } rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:opacity-50 ${className}`}
           {...props}
         >
@@ -79,7 +79,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttrib
         {label && (
           <label 
             htmlFor={inputId} 
-            className="block text-sm font-bold text-slate-700 dark:text-slate-350 mb-1.5 uppercase tracking-wider"
+            className="block text-sm font-bold text-zinc-700 dark:text-zinc-400 mb-1.5 uppercase tracking-wider"
           >
             {label}
           </label>
@@ -88,10 +88,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttrib
           ref={ref}
           id={inputId}
           rows={props.rows || 3}
-          className={`w-full px-4 py-3 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border ${
+          className={`w-full px-4 py-3 text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-900 border ${
             error 
               ? 'border-rose-500 focus:ring-rose-500' 
-              : 'border-slate-200 dark:border-slate-700 focus:ring-teal-500'
+              : 'border-zinc-200 dark:border-zinc-800 focus:ring-zinc-900 dark:focus:ring-zinc-300'
           } rounded-xl shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:opacity-50 ${className}`}
           {...props}
         />

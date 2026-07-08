@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useForm } from 'react-hook-form';
@@ -58,21 +58,21 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div className="min-h-screen bg-zinc-50/70 dark:bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-300">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="mx-auto h-12 w-12 rounded-2xl bg-teal-500 flex items-center justify-center text-[#0B2A4A] shadow-lg shadow-teal-500/20">
-          <Heartbeat size={32} weight="bold" />
+        <div className="mx-auto h-12 w-12 rounded-xl bg-zinc-900 dark:bg-zinc-50 flex items-center justify-center text-white dark:text-zinc-950 shadow-sm">
+          <Heartbeat size={28} weight="bold" />
         </div>
-        <h2 className="mt-6 text-3xl font-extrabold text-[#0B2A4A] dark:text-slate-100 tracking-wider uppercase">
+        <h2 className="mt-6 text-3xl font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight uppercase">
           MediTrack
         </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
           Create a New Healthcare Account
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="px-10 py-8 shadow-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-800">
+        <Card className="px-10 py-8 shadow-md bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             
             <Input
@@ -119,10 +119,10 @@ export default function Register() {
           </form>
 
           <div className="mt-6 text-center text-xs">
-            <span className="text-slate-400">Already have an account? </span>
+            <span className="text-zinc-400">Already have an account? </span>
             <Link 
               to="/login" 
-              className="font-bold text-teal-600 dark:text-teal-400 hover:underline"
+              className="font-bold text-zinc-900 hover:text-zinc-850 hover:underline dark:text-zinc-350 dark:hover:text-zinc-200"
             >
               Sign in here
             </Link>

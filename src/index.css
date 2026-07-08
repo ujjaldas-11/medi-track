@@ -46,75 +46,100 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+
+    /* Map zinc color classes directly to our custom brand palette */
+    --color-zinc-50: oklch(0.98 0.005 170); /* Minty White */
+    --color-zinc-55: oklch(0.96 0.008 170);
+    --color-zinc-100: oklch(0.95 0.01 170); /* Minty Light Gray */
+    --color-zinc-105: oklch(0.94 0.01 170);
+    --color-zinc-200: oklch(0.90 0.01 170);
+    --color-zinc-250: oklch(0.75 0.02 170);
+    --color-zinc-300: oklch(0.80 0.02 170);
+    --color-zinc-350: oklch(0.65 0.02 170);
+    --color-zinc-400: oklch(0.60 0.02 170);
+    --color-zinc-500: oklch(0.50 0.02 170);
+    --color-zinc-600: oklch(0.40 0.02 170);
+    --color-zinc-650: oklch(0.40 0.02 170);
+    --color-zinc-700: oklch(0.30 0.03 245); /* Lighter Navy text */
+    --color-zinc-800: oklch(0.24 0.03 245); /* Lighter Navy button */
+    --color-zinc-850: oklch(0.20 0.03 245);
+    --color-zinc-900: oklch(0.18 0.04 245); /* Deep Navy `#041c2c` */
+    --color-zinc-950: oklch(0.12 0.03 245); /* Darker Navy `#020d15` */
 }
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --background: oklch(0.98 0.005 170); /* Minty light background */
+    --foreground: oklch(0.18 0.04 245); /* Deep Navy text `#041c2c` */
+    --card: oklch(1 0 0); /* White cards */
+    --card-foreground: oklch(0.18 0.04 245);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --popover-foreground: oklch(0.18 0.04 245);
+    --primary: oklch(0.18 0.04 245); /* Deep Navy `#041c2c` */
+    --primary-foreground: oklch(0.99 0.005 180);
+    --secondary: oklch(0.95 0.01 170);
+    --secondary-foreground: oklch(0.18 0.04 245);
+    --muted: oklch(0.95 0.01 170);
+    --muted-foreground: oklch(0.45 0.02 245);
+    --accent: oklch(0.92 0.02 170);
+    --accent-foreground: oklch(0.18 0.04 245);
+    --destructive: oklch(0.55 0.18 20);
+    --border: oklch(0.90 0.01 170);
+    --input: oklch(0.90 0.01 170);
+    --ring: oklch(0.18 0.04 245);
+    
+    /* Premium clinical chart colors */
+    --chart-1: oklch(0.72 0.16 165); /* Teal green `#00c59a` */
+    --chart-2: oklch(0.18 0.04 245); /* Deep Navy `#041c2c` */
+    --chart-3: oklch(0.55 0.12 210); /* Sky blue */
+    --chart-4: oklch(0.75 0.14 145); /* Emerald */
+    --chart-5: oklch(0.85 0.10 185); /* Cyan */
+    
+    --radius: 0.5rem;
+    --sidebar: oklch(1 0 0);
+    --sidebar-foreground: oklch(0.18 0.04 245);
+    --sidebar-primary: oklch(0.18 0.04 245);
+    --sidebar-primary-foreground: oklch(0.99 0.005 180);
+    --sidebar-accent: oklch(0.95 0.01 170);
+    --sidebar-accent-foreground: oklch(0.18 0.04 245);
+    --sidebar-border: oklch(0.90 0.01 170);
+    --sidebar-ring: oklch(0.18 0.04 245);
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --background: oklch(0.12 0.03 245); /* Darker Navy `#020d15` */
+    --foreground: oklch(0.99 0.005 180); /* Near white */
+    --card: oklch(0.18 0.04 245); /* Deep Navy card `#041c2c` */
+    --card-foreground: oklch(0.99 0.005 180);
+    --popover: oklch(0.18 0.04 245);
+    --popover-foreground: oklch(0.99 0.005 180);
+    --primary: oklch(0.81 0.20 165); /* Vibrant Cyan/Teal `#00e1b2` */
+    --primary-foreground: oklch(0.12 0.03 245); /* Navy background text */
+    --secondary: oklch(0.24 0.03 245); /* Lighter Navy background */
+    --secondary-foreground: oklch(0.99 0.005 180);
+    --muted: oklch(0.24 0.03 245);
+    --muted-foreground: oklch(0.65 0.04 245);
+    --accent: oklch(0.24 0.03 245);
+    --accent-foreground: oklch(0.99 0.005 180);
+    --destructive: oklch(0.45 0.15 20);
+    --border: oklch(0.24 0.03 245);
+    --input: oklch(0.24 0.03 245);
+    --ring: oklch(0.81 0.20 165);
+    
+    /* Dark mode premium chart colors */
+    --chart-1: oklch(0.81 0.20 165); /* Vibrant Teal `#00e1b2` */
+    --chart-2: oklch(0.55 0.15 210); /* Sky blue */
+    --chart-3: oklch(0.70 0.15 150); /* Emerald */
+    --chart-4: oklch(0.40 0.08 245); /* Deep Navy */
+    --chart-5: oklch(0.30 0.06 245); /* Lighter Navy */
+    
+    --sidebar: oklch(0.18 0.04 245);
+    --sidebar-foreground: oklch(0.99 0.005 180);
+    --sidebar-primary: oklch(0.81 0.20 165);
+    --sidebar-primary-foreground: oklch(0.12 0.03 245);
+    --sidebar-accent: oklch(0.24 0.03 245);
+    --sidebar-accent-foreground: oklch(0.99 0.005 180);
+    --sidebar-border: oklch(0.24 0.03 245);
+    --sidebar-ring: oklch(0.81 0.20 165);
 }
 
 @layer base {

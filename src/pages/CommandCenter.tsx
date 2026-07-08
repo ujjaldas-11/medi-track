@@ -1,6 +1,6 @@
-import React from 'react';
 import { useData } from '../context/DataContext';
 import { useAlerts } from '../context/AlertsContext';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -14,7 +14,6 @@ import {
   Lightbulb, 
   ArrowRight,
   TrendUp,
-  Stethoscope,
   Heartbeat
 } from '@phosphor-icons/react';
 import { 
@@ -32,9 +31,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 export default function CommandCenter() {
-  const { centers, stock, doctors, beds, tests, requests, footfall } = useData();
+  const { centers, stock, doctors, beds, footfall } = useData();
   const { alerts } = useAlerts();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // 1. Calculations for aggregate stats
   const totalCentres = centers.length;
@@ -183,14 +183,14 @@ export default function CommandCenter() {
       {/* 1. Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
-        <Card variant="premium" hoverEffect>
+        <Card variant="default" hoverEffect>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">Total Centres</p>
-              <h3 className="text-3xl font-extrabold mt-1 text-[#0B2A4A] dark:text-slate-100">{totalCentres}</h3>
-              <p className="text-xs text-slate-400 mt-1">{chcCount} CHCs / {phcCount} PHCs</p>
+              <p className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">{t('totalCentres')}</p>
+              <h3 className="text-3xl font-extrabold mt-1 text-zinc-900 dark:text-zinc-50">{totalCentres}</h3>
+              <p className="text-xs text-zinc-400 mt-1">{t('chcPhcCount', { chcCount, phcCount, defaultValue: `${chcCount} CHCs / ${phcCount} PHCs` })}</p>
             </div>
-            <div className="p-3 bg-teal-500/10 text-teal-500 rounded-2xl">
+            <div className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 rounded-2xl">
               <Buildings size={28} weight="duotone" />
             </div>
           </div>
@@ -199,13 +199,13 @@ export default function CommandCenter() {
         <Card variant="default" hoverEffect className="border-rose-500/10">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">Critical Stock Alerts</p>
-              <h3 className="text-3xl font-extrabold mt-1 text-rose-600 dark:text-rose-500">{criticalAlerts}</h3>
+              <p className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">{t('criticalStockAlerts')}</p>
+              <h3 className="text-3xl font-extrabold mt-1 text-rose-650 dark:text-rose-500">{criticalAlerts}</h3>
               <Badge variant={criticalAlerts > 0 ? "critical" : "healthy"} className="mt-1.5">
-                {criticalAlerts > 0 ? "Action Required" : "System Clear"}
+                {criticalAlerts > 0 ? t('actionRequired') : t('systemClear')}
               </Badge>
             </div>
-            <div className={`p-3 rounded-2xl ${criticalAlerts > 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-slate-100 text-slate-400 dark:bg-slate-800'}`}>
+            <div className={`p-3 rounded-2xl ${criticalAlerts > 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-zinc-100 text-zinc-400 dark:bg-zinc-800'}`}>
               <Warning size={28} weight="duotone" />
             </div>
           </div>
@@ -214,14 +214,14 @@ export default function CommandCenter() {
         <Card variant="default" hoverEffect>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">Doctors Attendance</p>
-              <h3 className="text-3xl font-extrabold mt-1 text-[#0B2A4A] dark:text-slate-100">{doctorPresentRatio}</h3>
-              <p className="text-xs text-emerald-500 mt-1 font-semibold flex items-center gap-1">
+              <p className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">{t('doctorsAttendance')}</p>
+              <h3 className="text-3xl font-extrabold mt-1 text-zinc-900 dark:text-zinc-55">{doctorPresentRatio}</h3>
+              <p className="text-xs text-emerald-600 mt-1 font-semibold flex items-center gap-1">
                 <TrendUp size={14} />
-                Present Duty
+                {t('presentDuty')}
               </p>
             </div>
-            <div className="p-3 bg-teal-500/10 text-teal-500 rounded-2xl">
+            <div className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 rounded-2xl">
               <Users size={28} weight="duotone" />
             </div>
           </div>
@@ -230,11 +230,11 @@ export default function CommandCenter() {
         <Card variant="default" hoverEffect>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">Available Beds</p>
-              <h3 className="text-3xl font-extrabold mt-1 text-[#0B2A4A] dark:text-slate-100">{totalBedsAvailable}</h3>
-              <p className="text-xs text-slate-450 mt-1">Out of {totalBedsCapacity} total</p>
+              <p className="text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">{t('availableBeds')}</p>
+              <h3 className="text-3xl font-extrabold mt-1 text-zinc-900 dark:text-zinc-55">{totalBedsAvailable}</h3>
+              <p className="text-xs text-zinc-400 mt-1">{t('outOfTotal', { total: totalBedsCapacity, defaultValue: `Out of ${totalBedsCapacity} total` })}</p>
             </div>
-            <div className="p-3 bg-teal-500/10 text-teal-500 rounded-2xl">
+            <div className="p-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 rounded-2xl">
               <Bed size={28} weight="duotone" />
             </div>
           </div>
@@ -248,17 +248,17 @@ export default function CommandCenter() {
         {/* Recommendations */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center gap-2">
-            <Lightbulb size={24} className="text-teal-500" weight="duotone" />
-            <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">AI Resource Recommendations</h4>
+            <Lightbulb size={22} className="text-zinc-900 dark:text-zinc-100" />
+            <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">{t('aiRecommendations')}</h4>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
             {recommendations.map((rec) => (
-              <Card key={rec.id} className="border-l-4 border-l-teal-500 bg-white dark:bg-slate-800 shadow-sm">
+              <Card key={rec.id} className="border-l-4 border-l-zinc-900 dark:border-l-zinc-50 bg-white dark:bg-zinc-900 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex-1">
-                    <span className="text-[10px] font-black uppercase text-teal-600 dark:text-teal-400 tracking-widest">{rec.title}</span>
-                    <p className="text-sm text-slate-650 dark:text-slate-350 mt-1">{rec.desc}</p>
+                    <span className="text-[10px] font-black uppercase text-zinc-500 dark:text-zinc-400 tracking-widest">{rec.title}</span>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-1">{rec.desc}</p>
                   </div>
                   <Button 
                     onClick={() => navigate(rec.actionPath)}
@@ -277,26 +277,26 @@ export default function CommandCenter() {
         {/* Flagged Centers */}
         <div>
           <div className="flex items-center gap-2 mb-6">
-            <Warning size={24} className="text-rose-500" weight="duotone" />
-            <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Flagged Centres</h4>
+            <Warning size={22} className="text-rose-500" />
+            <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">{t('flaggedCentres')}</h4>
           </div>
 
           <Card className="p-0 overflow-hidden shadow-sm">
             {flaggedCentres.length === 0 ? (
-              <div className="p-6 text-center text-sm text-slate-400">
-                <p>✅ All health centres are currently performing above standard thresholds.</p>
+              <div className="p-6 text-center text-sm text-zinc-400">
+                <p>✅ {t('allCentresPerforming')}</p>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-750">
+              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 {flaggedCentres.map((center) => (
                   <div 
                     key={center.id} 
                     onClick={() => navigate(`/centres/${center.id}`)}
-                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-750/30 transition duration-150"
+                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition duration-150"
                   >
                     <div>
-                      <h5 className="font-bold text-sm text-[#0B2A4A] dark:text-slate-200">{center.name}</h5>
-                      <span className="text-xs text-slate-400 capitalize">{center.address}</span>
+                      <h5 className="font-bold text-sm text-zinc-900 dark:text-zinc-200">{center.name}</h5>
+                      <span className="text-xs text-zinc-400 capitalize">{center.address}</span>
                     </div>
                     <Badge variant={(center.healthScore || 0) < 60 ? "critical" : "warning"}>
                       Score: {center.healthScore}%
@@ -312,76 +312,64 @@ export default function CommandCenter() {
 
       {/* 3. Recharts Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        
-        {/* Patient Footfall */}
+                {/* Patient Footfall */}
         <Card>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-250">Patient Footfall Trend</h4>
-              <p className="text-xs text-slate-400">District-wide daily patient arrivals (OPD & Emergency)</p>
+              <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-100">{t('patientFootfallTrend')}</h4>
+              <p className="text-xs text-zinc-400">{t('footfallSub')}</p>
             </div>
-            <TrendUp size={24} className="text-teal-500" />
+            <TrendUp size={22} className="text-zinc-500" />
           </div>
 
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={footfallChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorOPD" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorEmergency" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:stroke-slate-800" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.92 0 0)" className="dark:stroke-zinc-800" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                    border: 'none', 
-                    borderRadius: '1rem',
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                    border: '1px solid oklch(0.92 0 0)', 
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
                   }} 
-                  labelStyle={{ fontWeight: 'bold', color: '#0B2A4A' }}
+                  labelStyle={{ fontWeight: 'bold', color: '#18181b' }}
                 />
-                <Area type="monotone" dataKey="OPD" stroke="#14b8a6" strokeWidth={2} fillOpacity={1} fill="url(#colorOPD)" />
-                <Area type="monotone" dataKey="Emergency" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEmergency)" />
+                <Area type="monotone" dataKey="OPD" stroke="#18181b" strokeWidth={2} fillOpacity={0.04} fill="#18181b" />
+                <Area type="monotone" dataKey="Emergency" stroke="#71717a" strokeWidth={2} fillOpacity={0.02} fill="#71717a" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
-
         {/* Bed occupancy */}
         <Card>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-250">Bed Occupancy Levels</h4>
-              <p className="text-xs text-slate-400">Current active ward occupancy by facility</p>
+              <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-100">{t('bedOccupancyLevels')}</h4>
+              <p className="text-xs text-zinc-400">{t('bedOccupancySub')}</p>
             </div>
-            <Heartbeat size={24} className="text-teal-500" />
+            <Heartbeat size={22} className="text-zinc-500" />
           </div>
 
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={bedOccupancyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:stroke-slate-800" />
-                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.92 0 0)" className="dark:stroke-zinc-800" />
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                    border: 'none', 
-                    borderRadius: '1rem',
-                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                    border: '1px solid oklch(0.92 0 0)', 
+                    borderRadius: '0.75rem',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
                   }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 11, fontWeight: 'semibold' }} />
-                <Bar dataKey="General" stackId="a" fill="#14b8a6" radius={[4, 4, 0, 0]} name="General Beds" />
-                <Bar dataKey="ICU" stackId="b" fill="#0B2A4A" radius={[4, 4, 0, 0]} name="ICU Beds" />
+                <Bar dataKey="General" stackId="a" fill="#18181b" radius={[4, 4, 0, 0]} name={t('generalBeds')} />
+                <Bar dataKey="ICU" stackId="b" fill="#a1a1aa" radius={[4, 4, 0, 0]} name={t('icuBeds')} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -391,21 +379,21 @@ export default function CommandCenter() {
 
       {/* 4. Complete health scores directory */}
       <div className="flex items-center gap-2 mb-6">
-        <Buildings size={24} className="text-teal-500" weight="duotone" />
-        <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">District Health Scorecard</h4>
+        <Buildings size={22} className="text-zinc-900 dark:text-zinc-100" />
+        <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">{t('healthScorecard')}</h4>
       </div>
 
       <Card className="p-0 overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Centre Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Medicines Stock</TableHead>
-              <TableHead>Beds Available</TableHead>
-              <TableHead>Present Doctors</TableHead>
-              <TableHead>Overall Health Score</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>{t('centreName')}</TableHead>
+              <TableHead>{t('type')}</TableHead>
+              <TableHead>{t('medicinesStockCol')}</TableHead>
+              <TableHead>{t('bedsAvailable')}</TableHead>
+              <TableHead>{t('presentDoctors')}</TableHead>
+              <TableHead>{t('overallHealthScore')}</TableHead>
+              <TableHead className="text-right">{t('action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -417,7 +405,7 @@ export default function CommandCenter() {
               const centerBed = beds.find(b => b.centerId === center.id);
               const totalB = (centerBed?.generalTotal || 0) + (centerBed?.icuTotal || 0);
               const occupiedB = (centerBed?.generalOccupied || 0) + (centerBed?.icuOccupied || 0);
-              const bedRatio = `${totalB - occupiedB} Free`;
+              const bedFreeCount = totalB - occupiedB;
 
               const centerDoc = doctors.filter(d => d.centerId === center.id);
               const docRatio = `${centerDoc.filter(d => d.isPresent).length}/${centerDoc.length}`;
@@ -429,11 +417,11 @@ export default function CommandCenter() {
 
               return (
                 <TableRow key={center.id}>
-                  <TableCell className="font-bold text-[#0B2A4A] dark:text-slate-200">{center.name}</TableCell>
+                  <TableCell className="font-bold text-zinc-900 dark:text-zinc-250">{center.name}</TableCell>
                   <TableCell><Badge variant="neutral">{center.type}</Badge></TableCell>
-                  <TableCell>{stockRatio} Healthy</TableCell>
-                  <TableCell>{bedRatio}</TableCell>
-                  <TableCell>{docRatio} Active</TableCell>
+                  <TableCell>{t('healthyRatio', { stockRatio, defaultValue: `${stockRatio} Healthy` })}</TableCell>
+                  <TableCell>{t('bedsFree', { count: bedFreeCount, defaultValue: `${bedFreeCount} Free` })}</TableCell>
+                  <TableCell>{t('activeRatio', { docRatio, defaultValue: `${docRatio} Active` })}</TableCell>
                   <TableCell><Badge variant={scoreColor}>{score}%</Badge></TableCell>
                   <TableCell className="text-right">
                     <Button 
@@ -441,7 +429,7 @@ export default function CommandCenter() {
                       size="sm"
                       variant="outline"
                     >
-                      View Details
+                      {t('viewDetails')}
                     </Button>
                   </TableCell>
                 </TableRow>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Input, Select, Textarea } from '../components/ui/Input';
@@ -26,6 +27,7 @@ export default function Registration() {
   const { centers, registerPatient } = useData();
   const { canRegisterPatients, user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PatientFormData>({
     resolver: zodResolver(patientSchema),
@@ -56,13 +58,13 @@ export default function Registration() {
   if (!canRegisterPatients) {
     return (
       <Layout title="Patient Registration">
-        <Card className="max-w-md mx-auto text-center border-rose-500/20 bg-rose-500/5 py-12">
+        <Card className="max-w-md mx-auto text-center border-rose-500/10 bg-rose-500/5 py-12">
           <div className="mx-auto h-12 w-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
             <Warning size={24} weight="bold" />
           </div>
-          <h4 className="font-extrabold text-sm uppercase tracking-wider text-rose-650 dark:text-rose-400">Access Restricted</h4>
-          <p className="text-xs text-slate-500 mt-2">
-            Only Front Desk staff and CMO administrators have permissions to register new patients.
+          <h4 className="font-extrabold text-sm uppercase tracking-wider text-rose-650 dark:text-rose-450">{t('accessRestricted')}</h4>
+          <p className="text-xs text-zinc-500 mt-2">
+            {t('registrationRestrictedDesc')}
           </p>
         </Card>
       </Layout>
@@ -72,63 +74,63 @@ export default function Registration() {
   return (
     <Layout title="Patient Registration">
       <div className="max-w-xl mx-auto">
-        <Card className="shadow-lg border border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <div className="p-2.5 bg-teal-500/10 text-teal-500 rounded-xl">
-              <UserPlus size={24} weight="duotone" />
+        <Card className="shadow-sm border border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+            <div className="p-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-150 rounded-xl">
+              <UserPlus size={22} weight="bold" />
             </div>
             <div>
-              <h4 className="font-bold text-[#0B2A4A] dark:text-slate-100 uppercase tracking-wide">New Patient Check-in</h4>
-              <p className="text-xs text-slate-400">Log visits and dispatch automatically to appropriate units</p>
+              <h4 className="font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wide">{t('newPatientCheckin')}</h4>
+              <p className="text-xs text-zinc-400">{t('logVisitsSub')}</p>
             </div>
           </div>
-
+ 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Patient Name"
+                label={t('patientNameField')}
                 placeholder="e.g. John Doe"
                 error={errors.name?.message}
                 {...register('name')}
               />
-
+ 
               <div className="grid grid-cols-2 gap-3">
                 <Input
-                  label="Age"
+                  label={t('ageField')}
                   type="number"
                   placeholder="34"
                   error={errors.age?.message}
                   {...register('age', { valueAsNumber: true })}
                 />
                 <Select
-                  label="Gender"
+                  label={t('genderField')}
                   error={errors.gender?.message}
                   {...register('gender')}
                 >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                  <option value="Male">{t('male')}</option>
+                  <option value="Female">{t('female')}</option>
+                  <option value="Other">{t('otherGender')}</option>
                 </Select>
               </div>
             </div>
-
+ 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
-                label="Assigned Health Centre"
+                label={t('assignedCenter')}
                 error={errors.centerId?.message}
                 {...register('centerId')}
               >
-                <option value="">-- Select Center --</option>
+                <option value="">{t('selectCenter')}</option>
                 {centers.map(center => (
                   <option key={center.id} value={center.id}>
                     {center.name} ({center.type})
                   </option>
                 ))}
               </Select>
-
+ 
               <Select
-                label="Admission Type"
+                label={t('admissionTypeField')}
                 error={errors.type?.message}
                 {...register('type')}
               >
@@ -136,21 +138,21 @@ export default function Registration() {
                 <option value="Emergency">Emergency Unit</option>
               </Select>
             </div>
-
+ 
             <Textarea
-              label="Visit Reason / Symptoms"
-              placeholder="Describe primary symptoms or reason for visit..."
+              label={t('visitReasonField')}
+              placeholder={t('visitReasonPlaceholder')}
               error={errors.visitReason?.message}
               {...register('visitReason')}
             />
-
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+ 
+            <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
               <Button
                 type="submit"
                 loading={submitting}
                 className="w-full sm:w-auto"
               >
-                Check-in Patient
+                {t('checkinPatientButton')}
               </Button>
             </div>
 

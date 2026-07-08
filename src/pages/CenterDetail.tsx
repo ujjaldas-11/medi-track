@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { Input, Select, Textarea } from '../components/ui/Input';
+import { Input, Select } from '../components/ui/Input';
 // import { Select } from '@/components/ui/select';
 // import { Textarea } from '@/components/ui/textarea';
 import { Modal } from '../components/ui/Modal';
@@ -26,8 +27,6 @@ import {
   Trash, 
   Pencil, 
   MapPin, 
-  Warning, 
-  Check, 
   PaperPlane
 } from '@phosphor-icons/react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
@@ -70,8 +69,9 @@ export default function CenterDetail() {
     addDoctor, updateDoctor, deleteDoctor, updateBeds, updateTests, logFootfall 
   } = useData();
   const { 
-    role, canEditStock, canManageBeds, canManageDoctors, canRegisterPatients, isAdmin 
+    canEditStock, canManageBeds, canManageDoctors, canRegisterPatients, isAdmin 
   } = useAuth();
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'stock' | 'doctors' | 'beds' | 'tests' | 'trends'>('overview');
 
@@ -91,10 +91,10 @@ export default function CenterDetail() {
 
   if (!center) {
     return (
-      <Layout title="Facility Not Found">
+      <Layout title={t('facilityNotFound', 'Facility Not Found')}>
         <Card className="text-center py-12">
-          <p className="text-slate-500 font-bold mb-4">The health centre you are looking for does not exist.</p>
-          <Button onClick={() => navigate('/centres')}>Back to Directory</Button>
+          <p className="text-slate-500 font-bold mb-4">{t('facilityNotExist', 'The health centre you are looking for does not exist.')}</p>
+          <Button onClick={() => navigate('/centres')}>{t('backToDirectory', 'Back to Directory')}</Button>
         </Card>
       </Layout>
     );
@@ -328,21 +328,21 @@ export default function CenterDetail() {
     <Layout title={`${center.name} detail`}>
       
       {/* Header Info Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-[#0B2A4A] text-white p-6 rounded-3xl shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-2xl shadow-sm text-zinc-900 dark:text-zinc-50">
         <div>
           <div className="flex items-center gap-3">
-            <span className="bg-teal-500 text-[#0B2A4A] font-extrabold text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider">{center.type}</span>
-            <span className="text-slate-350 text-xs">ID: {center.id}</span>
+            <span className="bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 font-extrabold text-xs px-2.5 py-0.5 rounded-full uppercase tracking-wider">{center.type}</span>
+            <span className="text-zinc-400 text-xs">ID: {center.id}</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black mt-2 tracking-wide uppercase">{center.name}</h3>
-          <p className="text-xs text-slate-300 mt-1 flex items-center gap-1">
+          <h3 className="text-xl sm:text-2xl font-black mt-2 tracking-wide uppercase text-zinc-900 dark:text-zinc-50">{center.name}</h3>
+          <p className="text-xs text-zinc-500 mt-1 flex items-center gap-1">
             <MapPin size={14} />
             {center.address} (Lat: {center.lat.toFixed(4)}, Lng: {center.lng.toFixed(4)})
           </p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-[10px] uppercase font-bold text-slate-350 tracking-wider">Health Score</p>
+            <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Health Score</p>
             <div className="mt-1 flex justify-end">
               <Badge variant={scoreColor} className="text-sm px-3.5 py-1">
                 {score}% Score
@@ -356,15 +356,15 @@ export default function CenterDetail() {
         
         {/* Slim local sub-sidebar */}
         <div className="lg:col-span-1">
-          <Card className="p-3 shadow-sm border border-slate-100 dark:border-slate-800">
+          <Card className="p-3 shadow-sm border border-zinc-200 dark:border-zinc-800">
             <nav className="flex flex-col gap-1.5">
               {[
-                { id: 'overview', label: 'Overview', icon: <Info size={18} /> },
-                { id: 'stock', label: 'Medicine Stock', icon: <Pill size={18} /> },
-                { id: 'doctors', label: 'Doctors Attendance', icon: <Users size={18} /> },
-                { id: 'beds', label: 'Beds Occupancy', icon: <Bed size={18} /> },
-                { id: 'tests', label: 'Diagnostics status', icon: <TestTube size={18} /> },
-                { id: 'trends', label: 'Trends & Logging', icon: <ChartBar size={18} /> },
+                { id: 'overview', label: t('overview', 'Overview'), icon: <Info size={18} /> },
+                { id: 'stock', label: t('medicinesStock', 'Medicine Stock'), icon: <Pill size={18} /> },
+                { id: 'doctors', label: t('doctorsAttendance', 'Doctors Attendance'), icon: <Users size={18} /> },
+                { id: 'beds', label: t('bedsOccupancy', 'Beds Occupancy'), icon: <Bed size={18} /> },
+                { id: 'tests', label: t('diagnosticsStatus', 'Diagnostics Status'), icon: <TestTube size={18} /> },
+                { id: 'trends', label: t('trendsLogging', 'Trends & Logging'), icon: <ChartBar size={18} /> },
               ].map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -373,8 +373,8 @@ export default function CenterDetail() {
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition ${
                       isActive 
-                        ? 'bg-teal-500 text-[#0B2A4A] shadow-md shadow-teal-500/10' 
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                        ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 shadow-sm' 
+                        : 'text-zinc-650 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-850/50'
                     }`}
                   >
                     {tab.icon}
@@ -395,46 +395,46 @@ export default function CenterDetail() {
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <Card variant="accent">
-                  <p className="text-[10px] uppercase font-bold text-slate-450 dark:text-slate-500">Medicines</p>
-                  <h4 className="text-xl font-extrabold text-[#0B2A4A] dark:text-slate-100 mt-1">{centerStock.length} items</h4>
+                  <p className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500">{t('medicinesCol', 'Medicines')}</p>
+                  <h4 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-105 mt-1">{t('itemsCount', '{{count}} items', { count: centerStock.length })}</h4>
                   <p className="text-xs text-rose-500 mt-1 font-semibold">
-                    {centerStock.filter(s => s.currentStock < s.minStock).length} items low
+                    {t('itemsCountLow', '{{count}} items low', { count: centerStock.filter(s => s.currentStock < s.minStock).length })}
                   </p>
                 </Card>
                 <Card variant="accent">
-                  <p className="text-[10px] uppercase font-bold text-slate-450 dark:text-slate-500">Staffing</p>
-                  <h4 className="text-xl font-extrabold text-[#0B2A4A] dark:text-slate-100 mt-1">{centerDoctors.length} doctors</h4>
-                  <p className="text-xs text-emerald-500 mt-1 font-semibold">
-                    {centerDoctors.filter(d => d.isPresent).length} present today
+                  <p className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500">{t('staffing', 'Staffing')}</p>
+                  <h4 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-105 mt-1">{t('doctorsCount', '{{count}} doctors', { count: centerDoctors.length })}</h4>
+                  <p className="text-xs text-emerald-600 mt-1 font-semibold">
+                    {t('presentTodayCount', '{{count}} present today', { count: centerDoctors.filter(d => d.isPresent).length })}
                   </p>
                 </Card>
                 <Card variant="accent">
-                  <p className="text-[10px] uppercase font-bold text-slate-450 dark:text-slate-500">Beds Occupied</p>
-                  <h4 className="text-xl font-extrabold text-[#0B2A4A] dark:text-slate-100 mt-1">
+                  <p className="text-[10px] uppercase font-bold text-zinc-400 dark:text-zinc-500">{t('bedsOccupied', 'Beds Occupied')}</p>
+                  <h4 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-105 mt-1">
                     {(centerBeds.generalOccupied || 0) + (centerBeds.icuOccupied || 0)}/
                     {(centerBeds.generalTotal || 0) + (centerBeds.icuTotal || 0)}
                   </h4>
-                  <p className="text-xs text-slate-400 mt-1">General + ICU Wards</p>
+                  <p className="text-xs text-zinc-400 mt-1">{t('wardsSubText', 'General + ICU Wards')}</p>
                 </Card>
               </div>
-
+ 
               <Card>
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Facility Location details</h4>
+                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">{t('facilityLocationDetails', 'Facility Location details')}</h4>
                   {isAdmin && (
                     <Button size="sm" variant="outline" onClick={() => setIsLocModalOpen(true)}>
                       <Pencil size={14} className="mr-1.5" />
-                      Manage Location
+                      {t('manageLocation', 'Manage Location')}
                     </Button>
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-4 text-xs mt-2 border-t border-slate-100 dark:border-slate-800 pt-4">
+                <div className="grid grid-cols-2 gap-4 text-xs mt-2 border-t border-zinc-200 dark:border-zinc-800 pt-4">
                   <div>
-                    <span className="text-slate-400 font-bold block">Latitude</span>
+                    <span className="text-zinc-400 font-bold block">{t('latitudeField', 'Latitude')}</span>
                     <span className="font-mono text-sm font-semibold">{center.lat}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 font-bold block">Longitude</span>
+                    <span className="text-zinc-400 font-bold block">{t('longitudeField', 'Longitude')}</span>
                     <span className="font-mono text-sm font-semibold">{center.lng}</span>
                   </div>
                 </div>
@@ -449,8 +449,8 @@ export default function CenterDetail() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Medicine stock levels</h4>
-                  <p className="text-xs text-slate-400">Inventory of medicines, warnings, and usage rates</p>
+                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Medicine stock levels</h4>
+                  <p className="text-xs text-zinc-400">Inventory of medicines, warnings, and usage rates</p>
                 </div>
                 {canEditStock && (
                   <Button 
@@ -500,7 +500,7 @@ export default function CenterDetail() {
                             onClick={() => handleEditStockClick(item)}
                             className={isLow ? 'bg-rose-500/5 dark:bg-rose-950/10' : ''}
                           >
-                            <TableCell className="font-semibold text-slate-800 dark:text-slate-200">
+                            <TableCell className="font-semibold text-zinc-800 dark:text-zinc-200">
                               <div className="flex items-center gap-2">
                                 {item.medicineName}
                                 {isLow && <Badge variant="critical">Low</Badge>}
@@ -522,13 +522,13 @@ export default function CenterDetail() {
                                 <div className="flex justify-end gap-1.5">
                                   <button
                                     onClick={() => handleEditStockClick(item)}
-                                    className="p-1 rounded text-teal-600 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                    className="p-1 rounded text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800 cursor-pointer"
                                   >
                                     <Pencil size={16} />
                                   </button>
                                   <button
                                     onClick={() => handleDeleteStock(item.id)}
-                                    className="p-1 rounded text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                    className="p-1 rounded text-rose-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
                                   >
                                     <Trash size={16} />
                                   </button>
@@ -552,8 +552,8 @@ export default function CenterDetail() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Doctors Directory & Attendance</h4>
-                  <p className="text-xs text-slate-400">Attendance tracking, absences, and clinical specialties</p>
+                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Doctors Directory & Attendance</h4>
+                  <p className="text-xs text-zinc-400">Attendance tracking, absences, and clinical specialties</p>
                 </div>
                 {canManageDoctors && (
                   <Button
@@ -584,7 +584,7 @@ export default function CenterDetail() {
                   <TableBody>
                     {centerDoctors.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6 text-slate-400">
+                        <TableCell colSpan={5} className="text-center py-6 text-zinc-400">
                           No doctors registered at this facility.
                         </TableCell>
                       </TableRow>
@@ -594,7 +594,7 @@ export default function CenterDetail() {
 
                         return (
                           <TableRow key={doc.id} onClick={() => handleEditDocClick(doc)}>
-                            <TableCell className="font-semibold text-slate-800 dark:text-slate-200">
+                            <TableCell className="font-semibold text-zinc-800 dark:text-zinc-200">
                               {doc.name}
                             </TableCell>
                             <TableCell>{doc.specialty}</TableCell>
@@ -616,7 +616,7 @@ export default function CenterDetail() {
                                     onClick={() => handleSendWarning(doc.name)}
                                     size="sm" 
                                     variant="outline"
-                                    className="text-xs px-2.5 py-1 flex items-center gap-1 border-rose-250 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                                    className="text-xs px-2.5 py-1 flex items-center gap-1 border-rose-200 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20"
                                   >
                                     <PaperPlane size={12} />
                                     Send Warning
@@ -628,7 +628,7 @@ export default function CenterDetail() {
                                     <select
                                       onChange={(e) => handleToggleDocAttendance(doc, e.target.value as any)}
                                       value={doc.isPresent ? 'Present' : (doc.isLate ? 'Late' : 'Absent')}
-                                      className="px-2 py-1 text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg"
+                                      className="px-2 py-1 text-xs border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 rounded-lg outline-none"
                                     >
                                       <option value="Present">Present</option>
                                       <option value="Absent">Absent</option>
@@ -636,13 +636,13 @@ export default function CenterDetail() {
                                     </select>
                                     <button
                                       onClick={() => handleDeleteDoc(doc.id)}
-                                      className="p-1 text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                                      className="p-1 text-rose-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded cursor-pointer"
                                     >
                                       <Trash size={16} />
                                     </button>
                                   </>
                                 ) : (
-                                  <span className="text-[10px] text-slate-400 uppercase font-semibold">ReadOnly</span>
+                                  <span className="text-[10px] text-zinc-400 uppercase font-semibold">ReadOnly</span>
                                 )}
                               </div>
                             </TableCell>
@@ -663,8 +663,8 @@ export default function CenterDetail() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Bed Occupancy Controls</h4>
-                  <p className="text-xs text-slate-400">Manage capacities and active occupancy rates of wards</p>
+                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Bed Occupancy Controls</h4>
+                  <p className="text-xs text-zinc-400">Manage capacities and active occupancy rates of wards</p>
                 </div>
                 {canManageBeds && (
                   <Button 
@@ -692,22 +692,22 @@ export default function CenterDetail() {
                 <Card>
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h5 className="font-extrabold text-xs uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">General Wards</h5>
-                      <span className="text-slate-400 text-xs">Standard admissions</span>
+                      <h5 className="font-extrabold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-200">General Wards</h5>
+                      <span className="text-zinc-400 text-xs">Standard admissions</span>
                     </div>
                     <span className="font-mono text-sm font-bold">
                       {centerBeds.generalOccupied}/{centerBeds.generalTotal} occupied
                     </span>
                   </div>
 
-                  <div className="w-full h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mb-6">
+                  <div className="w-full h-3 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-6">
                     <div 
                       className={`h-full rounded-full transition-all duration-300 ${
                         (centerBeds.generalOccupied / (centerBeds.generalTotal || 1)) >= 0.9 
                           ? 'bg-rose-500' 
                           : (centerBeds.generalOccupied / (centerBeds.generalTotal || 1)) >= 0.75 
                             ? 'bg-amber-500' 
-                            : 'bg-emerald-500'
+                            : 'bg-zinc-900 dark:bg-zinc-50'
                       }`}
                       style={{ width: `${Math.min(100, ((centerBeds.generalOccupied / (centerBeds.generalTotal || 1)) * 100))}%` }}
                     />
@@ -739,22 +739,22 @@ export default function CenterDetail() {
                 <Card>
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h5 className="font-extrabold text-xs uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Intensive Care Units (ICU)</h5>
-                      <span className="text-slate-400 text-xs">Critical patients</span>
+                      <h5 className="font-extrabold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Intensive Care Units (ICU)</h5>
+                      <span className="text-zinc-400 text-xs">Critical patients</span>
                     </div>
                     <span className="font-mono text-sm font-bold">
                       {centerBeds.icuOccupied}/{centerBeds.icuTotal} occupied
                     </span>
                   </div>
 
-                  <div className="w-full h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mb-6">
+                  <div className="w-full h-3 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-6">
                     <div 
                       className={`h-full rounded-full transition-all duration-300 ${
                         (centerBeds.icuOccupied / (centerBeds.icuTotal || 1)) >= 0.9 
                           ? 'bg-rose-500' 
                           : (centerBeds.icuOccupied / (centerBeds.icuTotal || 1)) >= 0.75 
                             ? 'bg-amber-500' 
-                            : 'bg-emerald-500'
+                            : 'bg-zinc-900 dark:bg-zinc-50'
                       }`}
                       style={{ width: `${Math.min(100, ((centerBeds.icuOccupied / (centerBeds.icuTotal || 1)) * 100))}%` }}
                     />
@@ -792,8 +792,8 @@ export default function CenterDetail() {
             <div className="space-y-6">
               
               <div>
-                <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Diagnostic Units & Equipment</h4>
-                <p className="text-xs text-slate-400">Toggle availability of testing labs, scanners, and support fleets</p>
+                <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Diagnostic Units & Equipment</h4>
+                <p className="text-xs text-zinc-400">Toggle availability of testing labs, scanners, and support fleets</p>
               </div>
 
               {/* Status Grid */}
@@ -814,16 +814,16 @@ export default function CenterDetail() {
                       className={`flex flex-col justify-between h-36 border transition duration-200 ${
                         isAvailable 
                           ? 'border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/10' 
-                          : 'border-slate-200 dark:border-slate-800'
+                          : 'border-zinc-200 dark:border-zinc-800'
                       }`}
                     >
                       <div>
-                        <h5 className="font-bold text-sm text-[#0B2A4A] dark:text-slate-200">{item.label}</h5>
-                        <p className="text-[10px] text-slate-400 uppercase font-black mt-1">Code: {item.name}</p>
+                        <h5 className="font-bold text-sm text-zinc-900 dark:text-zinc-200">{item.label}</h5>
+                        <p className="text-[10px] text-zinc-400 uppercase font-black mt-1">Code: {item.name}</p>
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
-                        <span className={`text-xs font-black uppercase tracking-wider ${isAvailable ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}`}>
+                      <div className="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                        <span className={`text-xs font-black uppercase tracking-wider ${isAvailable ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-400'}`}>
                           {isAvailable ? 'Available' : 'Unavailable'}
                         </span>
                         
@@ -832,7 +832,7 @@ export default function CenterDetail() {
                           checked={isAvailable}
                           disabled={!canManageBeds} // restricts diagnostic updates to MO/CMO
                           onChange={() => handleToggleTest(item.name, isAvailable)}
-                          className="w-9 h-5 bg-slate-250 dark:bg-slate-700 rounded-full appearance-none checked:bg-teal-500 relative cursor-pointer outline-none transition duration-200 before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-0.5 before:left-0.5 checked:before:translate-x-4 before:transition before:shadow-sm"
+                          className="w-9 h-5 bg-zinc-250 dark:bg-zinc-700 rounded-full appearance-none checked:bg-zinc-900 dark:checked:bg-white relative cursor-pointer outline-none transition duration-200 before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-0.5 before:left-0.5 checked:before:translate-x-4 before:transition before:shadow-sm"
                         />
                       </div>
                     </Card>
@@ -849,8 +849,8 @@ export default function CenterDetail() {
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">Patient Trends & Logging</h4>
-                  <p className="text-xs text-slate-400">Log new daily visits and track historical OPD/Emergency counts</p>
+                  <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">Patient Trends & Logging</h4>
+                  <p className="text-xs text-zinc-400">Log new daily visits and track historical OPD/Emergency counts</p>
                 </div>
                 {canRegisterPatients && (
                   <Button 
@@ -865,10 +865,10 @@ export default function CenterDetail() {
 
               {/* Chart */}
               <Card>
-                <h5 className="font-bold text-xs uppercase tracking-wider text-[#0B2A4A] dark:text-slate-250 mb-6">Patient Visit Trend (OPD vs Emergency)</h5>
+                <h5 className="font-bold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-200 mb-6">Patient Visit Trend (OPD vs Emergency)</h5>
                 <div className="h-72">
                   {centerFootfall.length === 0 ? (
-                    <div className="h-full flex items-center justify-center text-slate-400 text-sm font-semibold">
+                    <div className="h-full flex items-center justify-center text-zinc-400 text-sm font-semibold">
                       No visit trends recorded yet.
                     </div>
                   ) : (
@@ -878,22 +878,18 @@ export default function CenterDetail() {
                         OPD: f.opdCount,
                         Emergency: f.emergencyCount
                       }))} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="colorOpdDet" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
-                          </linearGradient>
-                          <linearGradient id="colorEmgDet" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" className="dark:stroke-slate-800" />
-                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} axisLine={false} tickLine={false} />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="OPD" stroke="#14b8a6" strokeWidth={2} fillOpacity={1} fill="url(#colorOpdDet)" />
-                        <Area type="monotone" dataKey="Emergency" stroke="#f43f5e" strokeWidth={2} fillOpacity={1} fill="url(#colorEmgDet)" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="oklch(0.92 0 0)" className="dark:stroke-zinc-800" />
+                        <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                            border: '1px solid oklch(0.92 0 0)', 
+                            borderRadius: '0.75rem' 
+                          }} 
+                        />
+                        <Area type="monotone" dataKey="OPD" stroke="#18181b" strokeWidth={2} fillOpacity={0.04} fill="#18181b" />
+                        <Area type="monotone" dataKey="Emergency" stroke="#71717a" strokeWidth={2} fillOpacity={0.02} fill="#71717a" />
                       </AreaChart>
                     </ResponsiveContainer>
                   )}
@@ -902,7 +898,7 @@ export default function CenterDetail() {
 
               {/* Patient Registration Logs */}
               <div>
-                <h5 className="font-extrabold text-xs uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200 mb-4">Patient Registrations Log</h5>
+                <h5 className="font-extrabold text-xs uppercase tracking-wider text-zinc-900 dark:text-zinc-200 mb-4">Patient Registrations Log</h5>
                 <Card className="p-0 overflow-hidden shadow-sm">
                   <Table>
                     <TableHeader>
@@ -917,14 +913,14 @@ export default function CenterDetail() {
                     <TableBody>
                       {centerPatients.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={5} className="text-center py-6 text-slate-400">
+                          <TableCell colSpan={5} className="text-center py-6 text-zinc-400">
                             No patients registered today for this center.
                           </TableCell>
                         </TableRow>
                       ) : (
                         centerPatients.map((pat) => (
                           <TableRow key={pat.id}>
-                            <TableCell className="font-bold text-slate-850 dark:text-slate-200">{pat.name}</TableCell>
+                            <TableCell className="font-bold text-zinc-800 dark:text-zinc-200">{pat.name}</TableCell>
                             <TableCell>{pat.age} yrs</TableCell>
                             <TableCell>{pat.gender}</TableCell>
                             <TableCell>
@@ -932,7 +928,7 @@ export default function CenterDetail() {
                                 {pat.type}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-slate-400">
+                            <TableCell className="text-zinc-400">
                               {pat.registeredAt ? new Date(pat.registeredAt.seconds * 1000).toLocaleString() : ''}
                             </TableCell>
                           </TableRow>
@@ -956,7 +952,7 @@ export default function CenterDetail() {
             <Input label="Latitude" type="number" step="any" {...locForm.register('lat')} error={locForm.formState.errors.lat?.message} />
             <Input label="Longitude" type="number" step="any" {...locForm.register('lng')} error={locForm.formState.errors.lng?.message} />
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button type="button" variant="outline" onClick={() => setIsLocModalOpen(false)}>Cancel</Button>
             <Button type="submit">Update Coordinates</Button>
           </div>
@@ -975,7 +971,7 @@ export default function CenterDetail() {
             <Input label="Reorder Threshold" type="number" {...stockForm.register('reorderThreshold')} error={stockForm.formState.errors.reorderThreshold?.message} />
             <Input label="Daily Usage Rate" type="number" {...stockForm.register('usedToday')} error={stockForm.formState.errors.usedToday?.message} />
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button type="button" variant="outline" onClick={() => setIsStockModalOpen(false)}>Cancel</Button>
             <Button type="submit">Save Medicine</Button>
           </div>
@@ -998,7 +994,7 @@ export default function CenterDetail() {
             </Select>
             <Input label="Absent Days" type="number" {...doctorForm.register('consecutiveAbsences')} error={doctorForm.formState.errors.consecutiveAbsences?.message} />
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button type="button" variant="outline" onClick={() => setIsDocModalOpen(false)}>Cancel</Button>
             <Button type="submit">Save Doctor</Button>
           </div>
@@ -1008,21 +1004,21 @@ export default function CenterDetail() {
       {/* Beds Modal */}
       <Modal isOpen={isBedsModalOpen} onClose={() => setIsBedsModalOpen(false)} title="Adjust Ward Capacities">
         <form onSubmit={bedsForm.handleSubmit(handleUpdateBeds)} className="space-y-4">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
-            <h5 className="font-bold text-xs uppercase text-[#0B2A4A] dark:text-slate-200 mb-2">General Ward Beds</h5>
+          <div className="border-b border-zinc-200 dark:border-zinc-800 pb-3 mb-3">
+            <h5 className="font-bold text-xs uppercase text-zinc-900 dark:text-zinc-200 mb-2">General Ward Beds</h5>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Total General Beds" type="number" {...bedsForm.register('generalTotal')} />
               <Input label="Occupied General Beds" type="number" {...bedsForm.register('generalOccupied')} />
             </div>
           </div>
           <div>
-            <h5 className="font-bold text-xs uppercase text-[#0B2A4A] dark:text-slate-200 mb-2">ICU Wards Beds</h5>
+            <h5 className="font-bold text-xs uppercase text-zinc-900 dark:text-zinc-200 mb-2">ICU Wards Beds</h5>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Total ICU Beds" type="number" {...bedsForm.register('icuTotal')} />
               <Input label="Occupied ICU Beds" type="number" {...bedsForm.register('icuOccupied')} />
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button type="button" variant="outline" onClick={() => setIsBedsModalOpen(false)}>Cancel</Button>
             <Button type="submit">Save Changes</Button>
           </div>
@@ -1036,7 +1032,7 @@ export default function CenterDetail() {
             <Input label="OPD Patient Count" type="number" {...footfallForm.register('opdCount')} />
             <Input label="Emergency Patient Count" type="number" {...footfallForm.register('emergencyCount')} />
           </div>
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button type="button" variant="outline" onClick={() => setIsLogFootfallOpen(false)}>Cancel</Button>
             <Button type="submit">Log Counts</Button>
           </div>

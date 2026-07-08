@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -28,6 +29,7 @@ export default function RedistributionRequests() {
   const { requests, centers, createRedistributionRequest, updateRequestStatus } = useData();
   const { role, user, isAdmin } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<RequestFormInput, any, RequestFormData>({
     resolver: zodResolver(requestSchema),
@@ -106,73 +108,73 @@ export default function RedistributionRequests() {
         {/* Left: Request Form */}
         <div className="lg:col-span-1">
           <Card>
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-850">
-              <div className="p-2.5 bg-teal-500/10 text-teal-500 rounded-xl">
-                <Plus size={24} weight="bold" />
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+              <div className="p-2.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-150 rounded-xl">
+                <Plus size={22} weight="bold" />
               </div>
               <div>
-                <h4 className="font-bold text-[#0B2A4A] dark:text-slate-100 uppercase tracking-wide">Request Resource</h4>
-                <p className="text-xs text-slate-400">Request stock or support from another clinic</p>
+                <h4 className="font-bold text-zinc-900 dark:text-zinc-105 uppercase tracking-wide">{t('requestResource', 'Request Resource')}</h4>
+                <p className="text-xs text-zinc-400">{t('requestResourceSub', 'Request stock or support from another clinic')}</p>
               </div>
             </div>
-
+ 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               
               <Select
-                label="Your Centre (Requestor)"
+                label={t('yourCenterRequestor', 'Your Centre (Requestor)')}
                 error={errors.fromCenterId?.message}
                 {...register('fromCenterId')}
               >
-                <option value="">-- Select Your Center --</option>
+                <option value="">{t('selectYourCenter', '-- Select Your Center --')}</option>
                 {centers.map(center => (
                   <option key={center.id} value={center.id}>{center.name}</option>
                 ))}
               </Select>
-
+ 
               <Select
-                label="Supply Centre (Supplier)"
+                label={t('supplyCenterSupplier', 'Supply Centre (Supplier)')}
                 error={errors.toCenterId?.message}
                 {...register('toCenterId')}
               >
-                <option value="">-- Select Supplying Center --</option>
+                <option value="">{t('selectSupplyingCenter', '-- Select Supplying Center --')}</option>
                 {centers.filter(c => c.id !== selectedFromCenter).map(center => (
                   <option key={center.id} value={center.id}>{center.name}</option>
                 ))}
               </Select>
-
+ 
               <div className="grid grid-cols-2 gap-4">
                 <Select
-                  label="Resource Type"
+                  label={t('resourceType', 'Resource Type')}
                   error={errors.resourceType?.message}
                   {...register('resourceType')}
                 >
-                  <option value="medicine">Medicine</option>
-                  <option value="bed">Beds / Wards</option>
-                  <option value="doctor">Doctors / Staff</option>
-                  <option value="other">Other / Support</option>
+                  <option value="medicine">{t('medicine', 'Medicine')}</option>
+                  <option value="bed">{t('bedsWards', 'Beds / Wards')}</option>
+                  <option value="doctor">{t('doctorsStaff', 'Doctors / Staff')}</option>
+                  <option value="other">{t('otherSupport', 'Other / Support')}</option>
                 </Select>
                 
                 <Input
-                  label="Quantity"
+                  label={t('quantityField', 'Quantity')}
                   type="number"
                   error={errors.quantity?.message}
                   {...register('quantity')}
                 />
               </div>
-
+ 
               <Input
-                label="Resource Name"
+                label={t('resourceNameField', 'Resource Name')}
                 placeholder="e.g. Paracetamol 500mg, ECG Machine"
                 error={errors.resourceName?.message}
                 {...register('resourceName')}
               />
-
+ 
               <Button
                 type="submit"
                 loading={submitting}
                 className="w-full mt-4"
               >
-                Submit Request
+                {t('submitRequestButton', 'Submit Request')}
               </Button>
 
             </form>
@@ -185,11 +187,11 @@ export default function RedistributionRequests() {
           {/* Facility context filter */}
           {!isAdmin && (
             <Card className="p-4 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase text-[#0B2A4A] dark:text-slate-350 tracking-wider">Select My Facility Workspace:</span>
+              <span className="text-xs font-bold uppercase text-zinc-900 dark:text-zinc-300 tracking-wider">{t('selectMyFacilityWorkspace', 'Select My Facility Workspace:')}</span>
               <select
                 value={myCenterId}
                 onChange={(e) => setMyCenterId(e.target.value)}
-                className="px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold uppercase tracking-wider rounded-xl text-slate-800 dark:text-slate-200"
+                className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs font-bold uppercase tracking-wider rounded-xl text-zinc-800 dark:text-zinc-200 outline-none"
               >
                 {centers.map(center => (
                   <option key={center.id} value={center.id}>{center.name}</option>
@@ -197,13 +199,13 @@ export default function RedistributionRequests() {
               </select>
             </Card>
           )}
-
+ 
           {/* Incoming Requests */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <ShieldCheck size={20} className="text-teal-500" />
-              <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">
-                {isAdmin ? 'All District Requests' : 'Incoming Requests (Supply Requests)'}
+              <ShieldCheck size={20} className="text-zinc-900 dark:text-zinc-100" />
+              <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">
+                {isAdmin ? t('allDistrictRequests', 'All District Requests') : t('incomingRequests', 'Incoming Requests (Supply Requests)')}
               </h4>
             </div>
 
@@ -211,63 +213,63 @@ export default function RedistributionRequests() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>From Facility</TableHead>
-                    <TableHead>To Facility</TableHead>
-                    <TableHead>Resource</TableHead>
-                    <TableHead>Qty</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('fromFacility', 'From Facility')}</TableHead>
+                    <TableHead>{t('toFacility', 'To Facility')}</TableHead>
+                    <TableHead>{t('resourceField', 'Resource')}</TableHead>
+                    <TableHead>{t('qtyCol', 'Qty')}</TableHead>
+                    <TableHead>{t('statusCol')}</TableHead>
+                    <TableHead className="text-right">{t('actionsCol')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {incomingRequests.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-6 text-slate-400">
-                        No incoming requests found.
+                      <TableCell colSpan={6} className="text-center py-6 text-zinc-400">
+                        {t('noIncomingRequests', 'No incoming requests found.')}
                       </TableCell>
                     </TableRow>
                   ) : (
                     incomingRequests.map((req) => {
                       const fromName = centers.find(c => c.id === req.fromCenterId)?.name || 'Unknown';
                       const toName = centers.find(c => c.id === req.toCenterId)?.name || 'Unknown';
-
+ 
                       let badgeVar: 'neutral' | 'healthy' | 'critical' = 'neutral';
                       if (req.status === 'Approved') badgeVar = 'healthy';
                       else if (req.status === 'Rejected') badgeVar = 'critical';
-
+ 
                       // CMO can approve anything. For MO, they can approve if supplier is myCenterId.
                       const canApprove = isAdmin || (['mo', 'pharmacist'].includes(role || '') && req.toCenterId === myCenterId);
-
+ 
                       return (
                         <TableRow key={req.id}>
-                          <TableCell className="font-semibold text-slate-800 dark:text-slate-200">{fromName}</TableCell>
+                          <TableCell className="font-semibold text-zinc-800 dark:text-zinc-200">{fromName}</TableCell>
                           <TableCell>{toName}</TableCell>
                           <TableCell>
-                            <span className="font-bold text-xs uppercase tracking-wide">{req.resourceType}: </span>
+                            <span className="font-bold text-xs uppercase tracking-wide">{t(req.resourceType)}: </span>
                             {req.resourceName}
                           </TableCell>
                           <TableCell>{req.quantity}</TableCell>
-                          <TableCell><Badge variant={badgeVar}>{req.status}</Badge></TableCell>
+                          <TableCell><Badge variant={badgeVar}>{t(req.status.toLowerCase(), req.status)}</Badge></TableCell>
                           <TableCell className="text-right">
                             {req.status === 'Pending' && canApprove ? (
                               <div className="flex justify-end gap-1.5">
                                 <button
                                   onClick={() => handleApprove(req.id)}
-                                  className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition active:scale-90"
+                                  className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition active:scale-90 cursor-pointer"
                                   title="Approve Request"
                                 >
                                   <Check size={16} weight="bold" />
                                 </button>
                                 <button
                                   onClick={() => handleReject(req.id)}
-                                  className="p-1.5 rounded-lg bg-rose-500/10 text-rose-600 hover:bg-rose-500 hover:text-white transition active:scale-90"
+                                  className="p-1.5 rounded-lg bg-rose-500/10 text-rose-650 hover:bg-rose-500 hover:text-white transition active:scale-90 cursor-pointer"
                                   title="Reject Request"
                                 >
                                   <X size={16} weight="bold" />
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">No Action</span>
+                              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">{t('noAction', 'No Action')}</span>
                             )}
                           </TableCell>
                         </TableRow>
@@ -283,28 +285,28 @@ export default function RedistributionRequests() {
           {!isAdmin && (
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <ArrowRight size={20} className="text-teal-500" />
-                <h4 className="font-extrabold text-sm uppercase tracking-wider text-[#0B2A4A] dark:text-slate-200">
-                  Outgoing Requests (My Requests)
+                <ArrowRight size={20} className="text-zinc-900 dark:text-zinc-100" />
+                <h4 className="font-extrabold text-sm uppercase tracking-wider text-zinc-900 dark:text-zinc-200">
+                  {t('outgoingRequests', 'Outgoing Requests (My Requests)')}
                 </h4>
               </div>
-
+ 
               <Card className="p-0 overflow-hidden shadow-sm">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Requested Supplying Clinic</TableHead>
-                      <TableHead>Resource Required</TableHead>
-                      <TableHead>Qty</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Requested By</TableHead>
+                      <TableHead>{t('requestedSupplyingClinic', 'Requested Supplying Clinic')}</TableHead>
+                      <TableHead>{t('resourceRequired', 'Resource Required')}</TableHead>
+                      <TableHead>{t('qtyCol')}</TableHead>
+                      <TableHead>{t('statusCol')}</TableHead>
+                      <TableHead>{t('requestedByCol', 'Requested By')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {outgoingRequests.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6 text-slate-400">
-                          No outgoing requests submitted.
+                        <TableCell colSpan={5} className="text-center py-6 text-zinc-400">
+                          {t('noOutgoingRequests', 'No outgoing requests submitted.')}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -314,17 +316,17 @@ export default function RedistributionRequests() {
                         let badgeVar: 'neutral' | 'healthy' | 'critical' = 'neutral';
                         if (req.status === 'Approved') badgeVar = 'healthy';
                         else if (req.status === 'Rejected') badgeVar = 'critical';
-
+ 
                         return (
                           <TableRow key={req.id}>
-                            <TableCell className="font-semibold text-slate-850 dark:text-slate-200">{toName}</TableCell>
+                            <TableCell className="font-semibold text-zinc-850 dark:text-zinc-200">{toName}</TableCell>
                             <TableCell>
-                              <span className="font-bold text-xs uppercase text-slate-450">{req.resourceType}: </span>
+                              <span className="font-bold text-xs uppercase text-zinc-400">{t(req.resourceType)}: </span>
                               {req.resourceName}
                             </TableCell>
                             <TableCell>{req.quantity}</TableCell>
-                            <TableCell><Badge variant={badgeVar}>{req.status}</Badge></TableCell>
-                            <TableCell className="text-xs text-slate-450 truncate max-w-xs">{req.requestedBy}</TableCell>
+                            <TableCell><Badge variant={badgeVar}>{t(req.status.toLowerCase(), req.status)}</Badge></TableCell>
+                            <TableCell className="text-xs text-zinc-400 truncate max-w-xs">{req.requestedBy}</TableCell>
                           </TableRow>
                         );
                       })
