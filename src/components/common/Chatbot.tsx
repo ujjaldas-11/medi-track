@@ -3,20 +3,22 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ChatCircleText, 
-  X, 
-  PaperPlaneRight, 
-  Gear, 
-  Robot, 
-  User as UserIcon, 
-  Sparkle, 
+import {
+  ChatCircleText,
+  X,
+  PaperPlaneRight,
+  Gear,
+  Robot,
+  User as UserIcon,
+  Sparkle,
   ArrowLeft,
   Key,
   Microphone,
   SpeakerHigh
 } from '@phosphor-icons/react';
 import { toast } from 'react-toastify';
+import { useVoiceInput } from '../../hooks/useVoiceInput';
+import { toSpeechLang } from '../../utils/speechLang';
 
 interface Message {
   id: string;
@@ -37,59 +39,23 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { i18n } = useTranslation();
-  const [isListening, setIsListening] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
-  const recognitionRef = useRef<any>(null);
 
-  // Initialize Speech Recognition
-  useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const rec = new SpeechRecognition();
-      rec.continuous = false;
-      rec.interimResults = false;
-
-      rec.onstart = () => {
-        setIsListening(true);
-      };
-
-      rec.onend = () => {
-        setIsListening(false);
-      };
-
-      rec.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInputText(prev => prev + (prev ? ' ' : '') + transcript);
-      };
-
-      rec.onerror = (event: any) => {
-        console.error("Speech recognition error:", event.error);
-        setIsListening(false);
-        if (event.error !== 'no-speech') {
-          toast.error(`Speech Recognition error: ${event.error}`);
-        }
-      };
-
-      recognitionRef.current = rec;
+  // Shared voice input hook — replaces the old inline SpeechRecognition setup
+  const {
+    isListening,
+    isSupported: isSttSupported,
+    toggle: toggleListening
+  } = useVoiceInput({
+    continuous: false,
+    onResult: (transcript) => {
+      setInputText((prev) => prev + (prev ? ' ' : '') + transcript);
     }
-  }, []);
-
-  // Update locale language dynamically for Speech Recognition
-  useEffect(() => {
-    if (recognitionRef.current) {
-      const currentLang = i18n.language || 'en';
-      recognitionRef.current.lang = currentLang === 'en' ? 'en-US' : 
-                                   currentLang === 'hi' ? 'hi-IN' : 
-                                   currentLang === 'bn' ? 'bn-IN' : 
-                                   currentLang === 'te' ? 'te-IN' : 
-                                   currentLang === 'ta' ? 'ta-IN' : 
-                                   currentLang === 'mr' ? 'mr-IN' : 'en-US';
-    }
-  }, [i18n.language]);
+  });
 
   // Clean up synthesis on unmount
   useEffect(() => {
@@ -100,31 +66,11 @@ export default function Chatbot() {
     };
   }, []);
 
-  const toggleListening = () => {
-    if (import.meta.env.VITE_STT_API_KEY) {
-      console.log("Configured external STT API key detected. Passing voice stream to transcription service.");
-    }
-    
-    if (!recognitionRef.current) {
-      toast.warning("Speech Recognition is not supported in this browser.");
-      return;
-    }
-    if (isListening) {
-      recognitionRef.current.stop();
-    } else {
-      try {
-        recognitionRef.current.start();
-      } catch (err) {
-        console.error("Failed to start speech recognition:", err);
-      }
-    }
-  };
-
   const handleSpeak = (text: string, messageId: string) => {
     if (import.meta.env.VITE_TTS_API_KEY) {
       console.log("Configured external TTS API key detected. Synthesizing audio stream via service.");
     }
-    
+
     if (!window.speechSynthesis) {
       toast.warning("Text-to-Speech is not supported in this browser.");
       return;
@@ -137,15 +83,8 @@ export default function Chatbot() {
       // Remove markdown chars if any to read cleanly
       const cleanText = text.replace(/[*#_`~-]/g, '');
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      
-      const currentLang = i18n.language || 'en';
-      utterance.lang = currentLang === 'en' ? 'en-US' : 
-                       currentLang === 'hi' ? 'hi-IN' : 
-                       currentLang === 'bn' ? 'bn-IN' : 
-                       currentLang === 'te' ? 'te-IN' : 
-                       currentLang === 'ta' ? 'ta-IN' : 
-                       currentLang === 'mr' ? 'mr-IN' : 'en-US';
-                       
+      utterance.lang = toSpeechLang(i18n.language);
+
       utterance.onend = () => {
         setSpeakingMessageId(null);
       };
@@ -273,7 +212,7 @@ export default function Chatbot() {
             <div className="bg-gradient-to-r from-zinc-900 to-zinc-850 dark:from-zinc-950 dark:to-zinc-900 text-white p-4 flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-2.5">
                 {showSettings ? (
-                  <button 
+                  <button
                     onClick={() => setShowSettings(false)}
                     className="p-1 rounded-lg hover:bg-white/10 transition"
                   >
@@ -295,7 +234,7 @@ export default function Chatbot() {
               </div>
               <div className="flex items-center gap-1.5">
                 {!showSettings && (
-                  <button 
+                  <button
                     onClick={() => setShowSettings(true)}
                     className="p-1.5 rounded-lg hover:bg-white/10 transition text-zinc-300 hover:text-white"
                     title="API Key Configuration"
@@ -303,7 +242,7 @@ export default function Chatbot() {
                     <Gear size={18} weight="bold" />
                   </button>
                 )}
-                <button 
+                <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 rounded-lg hover:bg-white/10 transition text-zinc-300 hover:text-white"
                 >
@@ -333,7 +272,7 @@ export default function Chatbot() {
 
                     <div className="flex flex-col gap-1.5 mt-2">
                       <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Gemini API Key</label>
-                      <input 
+                      <input
                         type="password"
                         placeholder={import.meta.env.VITE_GEMINI_API_KEY ? "Configured globally via ENV" : "AIzaSy..."}
                         value={inputKey}
@@ -346,13 +285,13 @@ export default function Chatbot() {
                     </div>
 
                     <div className="mt-auto flex gap-2">
-                      <button 
+                      <button
                         onClick={() => setShowSettings(false)}
                         className="flex-1 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 font-semibold text-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
                       >
                         Cancel
                       </button>
-                      <button 
+                      <button
                         onClick={handleSaveKey}
                         className="flex-1 py-2.5 bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 rounded-xl font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-150 transition"
                       >
@@ -372,8 +311,8 @@ export default function Chatbot() {
                     {/* Message History */}
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                       {messages.map((msg) => (
-                        <div 
-                          key={msg.id} 
+                        <div
+                          key={msg.id}
                           className={`flex items-start gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
                           {msg.sender === 'bot' && (
@@ -381,10 +320,10 @@ export default function Chatbot() {
                               <Robot size={15} />
                             </div>
                           )}
-                          <div 
+                          <div
                             className={`max-w-[75%] rounded-2xl p-3 text-xs shadow-sm leading-relaxed ${
-                              msg.sender === 'user' 
-                                ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 rounded-tr-none' 
+                              msg.sender === 'user'
+                                ? 'bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 rounded-tr-none'
                                 : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 rounded-tl-none text-zinc-800 dark:text-zinc-200'
                             }`}
                           >
@@ -394,8 +333,8 @@ export default function Chatbot() {
                                 type="button"
                                 onClick={() => handleSpeak(msg.text, msg.id)}
                                 className={`mt-1.5 flex items-center gap-1.5 text-[9px] font-black uppercase tracking-wider transition hover:scale-102 active:scale-95 cursor-pointer ${
-                                  speakingMessageId === msg.id 
-                                    ? 'text-[#00e1b2]' 
+                                  speakingMessageId === msg.id
+                                    ? 'text-[#00e1b2]'
                                     : 'text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
                                 }`}
                                 title="Listen to response"
@@ -426,7 +365,7 @@ export default function Chatbot() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div ref={messagesEndRef} />
                     </div>
 
@@ -451,17 +390,17 @@ export default function Chatbot() {
 
             {/* Input Bar */}
             {!showSettings && (
-              <form 
+              <form
                 onSubmit={(e) => { e.preventDefault(); handleSend(inputText); }}
                 className="p-3 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-850 flex items-center gap-2"
               >
-                {isSttEnabled && (
+                {isSttEnabled && isSttSupported && (
                   <button
                     type="button"
                     onClick={toggleListening}
                     className={`p-2.5 rounded-xl border transition-all flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shrink-0 ${
-                      isListening 
-                        ? 'bg-rose-500 border-rose-500 text-white animate-pulse' 
+                      isListening
+                        ? 'bg-rose-500 border-rose-500 text-white animate-pulse'
                         : 'bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-950/25 dark:hover:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300'
                     }`}
                     title={isListening ? 'Stop Listening' : 'Speak to chatbot'}
@@ -470,7 +409,7 @@ export default function Chatbot() {
                   </button>
                 )}
 
-                <input 
+                <input
                   type="text"
                   placeholder={(isListening && isSttEnabled) ? 'Listening...' : `Ask about ${assistantTitle.toLowerCase()}...`}
                   value={inputText}
@@ -558,7 +497,7 @@ function getSuggestedQueries(path: string, role: string): string[] {
 
 function getMockResponse(query: string, path: string, role: string): string {
   const lowerQuery = query.toLowerCase();
-  
+
   if (path.includes('stock') || role === 'pharmacist' || lowerQuery.includes('stock') || lowerQuery.includes('medicine') || lowerQuery.includes('shortage') || lowerQuery.includes('redistribution')) {
     if (lowerQuery.includes('short') || lowerQuery.includes('alert') || lowerQuery.includes('low') || lowerQuery.includes('which')) {
       return "Current inventory checks show Paracetamol 500mg (12% remaining) and Amoxicillin 250mg (8% remaining) are below safety thresholds.\n\nI suggest initiating a redistribution request from Sector 2, which currently holds a surplus of 650 units.";
@@ -568,7 +507,7 @@ function getMockResponse(query: string, path: string, role: string): string {
     }
     return "Stock Inventory Status: Monitoring 148 pharmaceutical categories. 2 warnings active. You can review full tables on this dashboard.";
   }
-  
+
   if (path.includes('beds') || role === 'mo' || lowerQuery.includes('bed') || lowerQuery.includes('occupancy') || lowerQuery.includes('icu') || lowerQuery.includes('vacant')) {
     if (lowerQuery.includes('icu') || lowerQuery.includes('occupancy')) {
       return "The ICU ward is currently at 100% capacity (8/8 occupied). There are 2 pending discharges scheduled for 2:00 PM today. General Ward has 12 vacant beds.";

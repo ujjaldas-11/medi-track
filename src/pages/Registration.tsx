@@ -10,7 +10,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-toastify';
-import { UserPlus, Warning } from '@phosphor-icons/react';
+import { UserPlus, Warning, Microphone, MicrophoneSlash } from '@phosphor-icons/react';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 
 const patientSchema = z.object({
   name: z.string().min(3, 'Patient name must be at least 3 characters'),
@@ -29,12 +30,24 @@ export default function Registration() {
   const [submitting, setSubmitting] = useState(false);
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<PatientFormData>({
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<PatientFormData>({
     resolver: zodResolver(patientSchema),
     defaultValues: {
       gender: 'Male',
       type: 'OPD'
     }
+  });
+
+  const visitReason = watch('visitReason') || '';
+
+  // Voice dictation for the visit reason field, language follows the app's i18n language
+  const { isListening, isSupported, toggle: toggleListening } = useVoiceInput({
+    continuous: false,
+    onResult: (transcript) => {
+      setValue('visitReason', (visitReason ? visitReason + ' ' : '') + transcript, {
+        shouldValidate: true,
+      });
+    },
   });
 
   const onSubmit = async (data: PatientFormData) => {
@@ -84,9 +97,9 @@ export default function Registration() {
               <p className="text-xs text-zinc-400">{t('logVisitsSub')}</p>
             </div>
           </div>
- 
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label={t('patientNameField')}
@@ -94,7 +107,7 @@ export default function Registration() {
                 error={errors.name?.message}
                 {...register('name')}
               />
- 
+
               <div className="grid grid-cols-2 gap-3">
                 <Input
                   label={t('ageField')}
@@ -114,7 +127,7 @@ export default function Registration() {
                 </Select>
               </div>
             </div>
- 
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
                 label={t('assignedCenter')}
@@ -128,7 +141,7 @@ export default function Registration() {
                   </option>
                 ))}
               </Select>
- 
+
               <Select
                 label={t('admissionTypeField')}
                 error={errors.type?.message}
@@ -138,14 +151,30 @@ export default function Registration() {
                 <option value="Emergency">Emergency Unit</option>
               </Select>
             </div>
- 
-            <Textarea
-              label={t('visitReasonField')}
-              placeholder={t('visitReasonPlaceholder')}
-              error={errors.visitReason?.message}
-              {...register('visitReason')}
-            />
- 
+
+            <div className="relative">
+              <Textarea
+                label={t('visitReasonField')}
+                placeholder={t('visitReasonPlaceholder')}
+                error={errors.visitReason?.message}
+                {...register('visitReason')}
+              />
+              {isSupported && (
+                <button
+                  type="button"
+                  onClick={toggleListening}
+                  title={isListening ? 'Stop dictation' : 'Dictate visit reason'}
+                  className={`absolute right-2 top-8 p-1.5 rounded-full transition-colors ${
+                    isListening
+                      ? 'bg-rose-500/10 text-rose-500 animate-pulse'
+                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
+                  }`}
+                >
+                  {isListening ? <MicrophoneSlash size={16} weight="bold" /> : <Microphone size={16} weight="bold" />}
+                </button>
+              )}
+            </div>
+
             <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
               <Button
                 type="submit"
