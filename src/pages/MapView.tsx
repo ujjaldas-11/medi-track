@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -27,6 +28,7 @@ export default function MapView() {
   const { centers, updateCenter } = useData();
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [selectedCenter, setSelectedCenter] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -92,12 +94,12 @@ export default function MapView() {
         
         {/* Left sidebar: Facility List on Map */}
         <div className="lg:col-span-1 space-y-4 max-h-[70vh] overflow-y-auto pr-1">
-          <Card className="p-4 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between mb-2">
-            <span className="text-xs font-black uppercase text-slate-400">Centres Index</span>
+          <Card className="p-4 bg-zinc-50/50 dark:bg-zinc-900/50 flex items-center justify-between mb-2">
+            <span className="text-xs font-black uppercase text-zinc-400">{t('centresIndex', 'Centres Index')}</span>
             {!isAdmin && (
-              <span className="text-[10px] text-slate-450 font-bold uppercase tracking-wider flex items-center gap-1">
+              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-1">
                 <Shield size={14} />
-                ReadOnly
+                {t('readOnlyView')}
               </span>
             )}
           </Card>
@@ -112,19 +114,19 @@ export default function MapView() {
               <Card 
                 key={center.id} 
                 onClick={() => handleEditClick(center)}
-                className={`p-4 cursor-pointer hover:border-teal-500/30 transition shadow-sm border ${
-                  selectedCenter?.id === center.id ? 'border-teal-500/50 bg-teal-500/5' : ''
+                className={`p-4 cursor-pointer hover:border-zinc-900/30 dark:hover:border-zinc-50/30 transition shadow-sm border ${
+                  selectedCenter?.id === center.id ? 'border-zinc-900/50 bg-zinc-900/5 dark:border-zinc-50/50 dark:bg-zinc-50/5' : ''
                 }`}
               >
                 <div className="flex justify-between items-start gap-2">
-                  <h5 className="font-extrabold text-xs uppercase text-[#0B2A4A] dark:text-slate-200">{center.name}</h5>
+                  <h5 className="font-extrabold text-xs uppercase text-zinc-900 dark:text-zinc-200">{center.name}</h5>
                   <Badge variant={scoreColor}>{score}%</Badge>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-2 font-mono">
-                  Coordinates: {center.lat.toFixed(4)}, {center.lng.toFixed(4)}
+                <p className="text-[10px] text-zinc-400 mt-2 font-mono">
+                  {t('coordinatesLabel', 'Coordinates')}: {center.lat.toFixed(4)}, {center.lng.toFixed(4)}
                 </p>
                 {isAdmin && (
-                  <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                  <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 flex justify-end">
                     <Button 
                       size="sm" 
                       variant="outline" 
@@ -135,7 +137,7 @@ export default function MapView() {
                       className="text-[10px] px-2 py-1 flex items-center gap-1"
                     >
                       <Pencil size={12} />
-                      Set Coord
+                      {t('setCoord', 'Set Coord')}
                     </Button>
                   </div>
                 )}
@@ -145,7 +147,7 @@ export default function MapView() {
         </div>
 
         {/* Map Grid container */}
-        <div className="lg:col-span-3 h-[70vh] rounded-3xl overflow-hidden shadow-lg border border-slate-250 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 relative z-0">
+        <div className="lg:col-span-3 h-[70vh] rounded-2xl overflow-hidden shadow-sm border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 relative z-0">
           
           <MapContainer 
             center={centers[0] ? [centers[0].lat, centers[0].lng] : defaultPosition} 
@@ -166,25 +168,25 @@ export default function MapView() {
                   icon={createCustomIcon(score)}
                 >
                   <Popup>
-                    <div className="p-1 space-y-2 text-slate-850">
-                      <h4 className="font-bold text-sm text-[#0B2A4A] dark:text-white leading-tight">{center.name}</h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-350">{center.address}</p>
+                    <div className="p-1 space-y-2 text-zinc-800 dark:text-zinc-200">
+                      <h4 className="font-bold text-sm text-zinc-900 dark:text-white leading-tight">{center.name}</h4>
+                      <p className="text-xs text-zinc-500 dark:text-zinc-400">{center.address}</p>
                       
-                      <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/50">
+                      <div className="flex gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
                         <button
                           onClick={() => navigate(`/centres/${center.id}`)}
-                          className="flex items-center gap-1 text-[10px] font-extrabold uppercase text-teal-650 dark:text-teal-450 hover:underline"
+                          className="flex items-center gap-1 text-[10px] font-extrabold uppercase text-zinc-900 dark:text-zinc-100 hover:underline cursor-pointer"
                         >
                           <LinkIcon size={12} />
-                          Details
+                          {t('details', 'Details')}
                         </button>
                         {isAdmin && (
                           <button
                             onClick={() => handleEditClick(center)}
-                            className="flex items-center gap-1 text-[10px] font-extrabold uppercase text-slate-500 dark:text-slate-400 hover:underline"
+                            className="flex items-center gap-1 text-[10px] font-extrabold uppercase text-zinc-500 dark:text-zinc-400 hover:underline cursor-pointer"
                           >
                             <Pencil size={12} />
-                            Coordinates
+                            {t('coordinatesLabel', 'Coordinates')}
                           </button>
                         )}
                       </div>
@@ -203,44 +205,44 @@ export default function MapView() {
       <Modal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        title={selectedCenter ? `Edit Coordinates - ${selectedCenter.name}` : 'Edit Coordinates'}
+        title={selectedCenter ? t('editCoordinatesFor', { name: selectedCenter.name, defaultValue: `Edit Coordinates - ${selectedCenter.name}` }) : t('editCoordinates', 'Edit Coordinates')}
       >
         <form onSubmit={handleSubmit(handleSaveCoordinates)} className="space-y-4">
-          <p className="text-xs text-slate-400 leading-relaxed mb-4">
-            Enter decimal degree coordinates to relocate this health facility on the Leaflet map.
+          <p className="text-xs text-zinc-400 leading-relaxed mb-4">
+            {t('relocateFacilityDesc', 'Enter decimal degree coordinates to relocate this health facility on the Leaflet map.')}
           </p>
-
+ 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Latitude"
+              label={t('latitudeField', 'Latitude')}
               type="number"
               step="any"
               error={errors.lat?.message}
               {...register('lat', { valueAsNumber: true })}
             />
             <Input
-              label="Longitude"
+              label={t('longitudeField', 'Longitude')}
               type="number"
               step="any"
               error={errors.lng?.message}
               {...register('lng', { valueAsNumber: true })}
             />
           </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+ 
+          <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
             <Button
               type="button"
               variant="outline"
               onClick={() => setIsEditModalOpen(false)}
               disabled={submitting}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               type="submit"
               loading={submitting}
             >
-              Update Coordinates
+              {t('updateCoordinates', 'Update Coordinates')}
             </Button>
           </div>
         </form>

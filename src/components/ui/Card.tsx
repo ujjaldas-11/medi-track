@@ -17,16 +17,16 @@ export function Card({
 }: CardProps) {
   const roundedClass = roundedSize === '3xl' ? 'rounded-3xl' : 'rounded-2xl';
   
-  const baseStyles = 'border border-slate-200 dark:border-slate-800 p-6 transition-all duration-300';
+  const baseStyles = 'border border-zinc-200 dark:border-zinc-800/80 p-6 transition-all duration-300';
   
   const variantStyles = {
-    default: 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-md',
-    premium: 'bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 text-slate-800 dark:text-slate-100 shadow-xl border-emerald-500/20 dark:border-emerald-500/10',
-    accent: 'bg-gradient-to-br from-teal-500/5 to-transparent border-teal-500/20 dark:bg-slate-800 dark:text-slate-100 shadow-sm'
+    default: 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-sm',
+    premium: 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-md border-zinc-200 dark:border-zinc-800',
+    accent: 'bg-zinc-50/50 dark:bg-zinc-900/40 border-zinc-200/60 dark:border-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm'
   };
 
   const hoverClass = hoverEffect 
-    ? 'hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 dark:hover:border-emerald-500/20' 
+    ? 'hover:-translate-y-0.5 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700' 
     : '';
 
   return (
